@@ -1,0 +1,53 @@
+import nodemailer from 'nodemailer';
+import { config } from '../config/config';
+
+interface EmailOptions {
+  to: string;
+  subject: string;
+  text: string;
+  html?: string;
+}
+
+export class EmailService {
+  private transporter: nodemailer.Transporter;
+
+  constructor() {
+    this.transporter = nodemailer.createTransport({
+        host: config.smtpHost,
+        port: config.smtpPort,
+        secure: config.smtpSecure,
+        auth: {
+          user: config.smtpUser,
+          pass: config.smtpPass,
+        },
+      });
+  }
+
+  async sendEmail(options: EmailOptions): Promise<void> {
+    try {
+      await this.transporter.sendMail({
+        from: `"LegaC" <${process.env.SMTP_USER}>`,
+        to: options.to,
+        subject: options.subject,
+        text: options.text,
+        html: options.html,
+      });
+      console.log(`Email sent to ${options.to}`);
+    } catch (error) {
+      console.error('Failed to send email:', error);
+      throw new Error('Email sending failed');
+    }
+  }
+
+  async sendWelcomeEmail(to: string, username: string): Promise<void> {
+    const subject = 'Welcome to LegaC!';
+    const text = `Hello ${username},\n\nThank you for registering with LegaC! We're excited to have you on board.\n\nBest regards,\nThe LegaC Team`;
+    const html = `
+      <h1>Welcome to LegaC!</h1>
+      <p>Hello ${username},</p>
+      <p>Thank you for registering with LegaC! We're excited to have you on board.</p>
+      <p>Best regards,<br>The LegaC Team</p>
+    `;
+    await this.sendEmail({ to, subject, text, html });
+  }
+}
