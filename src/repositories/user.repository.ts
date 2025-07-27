@@ -1,5 +1,6 @@
 import { pool } from '../config/database';
 import { QueryResult } from 'pg';
+import { AuthRequest } from '../schemas/auth.schema';
 
 interface User {
   id: number;
@@ -10,7 +11,7 @@ interface User {
 }
 
 export class UserRepository {
-  async create(user: Omit<User, 'id'>): Promise<User> {
+  async create(user: AuthRequest): Promise<User> {
     const query = `
       INSERT INTO users (email, password)
       VALUES ($1, $2)

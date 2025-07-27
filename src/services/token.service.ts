@@ -5,7 +5,7 @@ import { publicKey } from "@metaplex-foundation/umi";
 import { connection } from "../config/config";
 import { PublicKey } from '@solana/web3.js';
 
-export type TokenAsset = {
+export interface TokenAsset {
     mint: string;
     decimals: number;
     symbol: string;

@@ -1,5 +1,7 @@
+import { TokenService } from './services/token.service';
 import { swaggerSpec } from './swagger/swagger';
 import authRoutes from './routes/auth.routes';
+import heirRoutes from './routes/heirs.routes';
 import { initDb } from './config/database';
 import swaggerUi from 'swagger-ui-express';
 import { config } from './config/config';
@@ -7,7 +9,6 @@ import { logger } from './config/logger';
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import { TokenService } from './services/token.service';
 
 // load environment variables
 dotenv.config();
@@ -35,7 +36,7 @@ tokensrv.getWalletTokens("GYUSY9r751KMeYK9JfvNJpmBtJWKzsorwPqoXhvJXao4").then(to
 
 // Routes
 app.use('/auth', authRoutes);
-// app.use('/heirs', heirRoutes);
+app.use('/heirs', heirRoutes);
 // app.use('/capsules', capsuleRoutes);
 
 // Database initialization and server start

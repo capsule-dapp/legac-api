@@ -21,11 +21,10 @@ export const initDb = async () => {
 
       CREATE TABLE IF NOT EXISTS heirs (
         id SERIAL PRIMARY KEY,
+        fullname VARCHAR(255) NOT NULL,
         email VARCHAR(255) NOT NULL,
-        firstName VARCHAR(255),
-        lastName VARCHAR(255),
-        wallet_address VARCHAR(255),
-        age INTEGER
+        title VARCHAR(60) NOT NULL,
+        wallet_address VARCHAR(255)
       );
 
       CREATE TABLE IF NOT EXISTS capsules (
