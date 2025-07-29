@@ -11,6 +11,7 @@ export interface TokenAsset {
     symbol: string;
     name: string;
     uri: string;
+    balance: number | null;
 }
 
 export class TokenService {
@@ -27,8 +28,10 @@ export class TokenService {
             this.umi,
             publicKey(address)
         )
+
+        const tokenAssets = assets.filter(asset => asset.mint.decimals > 0);
         return Promise.all(
-            assets.map(async asset => {
+            tokenAssets.map(async asset => {
                 const account = getAssociatedTokenAddressSync(
                     new PublicKey(asset.mint.publicKey),
                     new PublicKey(address)

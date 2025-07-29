@@ -1,9 +1,10 @@
 import { pool } from '../config/database';
 import { QueryResult } from 'pg';
-import { AuthRequest } from '../schemas/auth.schema';
+import { RegisterRequest } from '../schemas/auth.schema';
 
 interface User {
   id: number;
+  fullname: string;
   email: string;
   password: string;
   secretKey?: string;
@@ -11,13 +12,13 @@ interface User {
 }
 
 export class UserRepository {
-  async create(user: AuthRequest): Promise<User> {
+  async create(user: RegisterRequest): Promise<User> {
     const query = `
-      INSERT INTO users (email, password)
-      VALUES ($1, $2)
+      INSERT INTO users (fullname, email, password)
+      VALUES ($1, $2, $3)
       RETURNING *;
     `;
-    const values = [user.email, user.password];
+    const values = [user.fullname, user.email, user.password];
     const result: QueryResult<User> = await pool.query(query, values);
     return result.rows[0];
   }

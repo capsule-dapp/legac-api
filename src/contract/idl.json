@@ -1,0 +1,2603 @@
+{
+  "address": "6GuYwH7dmXsBpfy92eu2YRyFyqcYSzKXywFEVNNksrwA",
+  "metadata": {
+    "name": "legac",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "cancel_recovery",
+      "discriminator": [
+        176,
+        23,
+        203,
+        37,
+        121,
+        251,
+        227,
+        83
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "capsule_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  97,
+                  112,
+                  115,
+                  117,
+                  108,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "capsule_account.owner",
+                "account": "Capsule"
+              },
+              {
+                "kind": "arg",
+                "path": "capsule_id"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "capsule_id",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "check_capsule_condition",
+      "discriminator": [
+        221,
+        184,
+        175,
+        102,
+        2,
+        229,
+        218,
+        134
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "signer": true
+        },
+        {
+          "name": "capsule_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  97,
+                  112,
+                  115,
+                  117,
+                  108,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "signer"
+              },
+              {
+                "kind": "arg",
+                "path": "capsule_id"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "capsule_id",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "checkin_capsule",
+      "discriminator": [
+        38,
+        237,
+        167,
+        157,
+        17,
+        227,
+        60,
+        127
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "capsule_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  97,
+                  112,
+                  115,
+                  117,
+                  108,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "signer"
+              },
+              {
+                "kind": "arg",
+                "path": "capsule_id"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "capsule_id",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "create_crypto_capsule",
+      "discriminator": [
+        58,
+        139,
+        1,
+        245,
+        124,
+        124,
+        30,
+        216
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "capsule_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  97,
+                  112,
+                  115,
+                  117,
+                  108,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "signer"
+              },
+              {
+                "kind": "arg",
+                "path": "capsule_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "asset_mint",
+          "writable": true
+        },
+        {
+          "name": "asset_token_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  97,
+                  112,
+                  115,
+                  117,
+                  108,
+                  101,
+                  95,
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "asset_mint"
+              },
+              {
+                "kind": "arg",
+                "path": "capsule_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user_asset_token_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "signer"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "asset_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "capsule_id",
+          "type": "string"
+        },
+        {
+          "name": "unlock_type",
+          "type": {
+            "defined": {
+              "name": "UnlockType"
+            }
+          }
+        },
+        {
+          "name": "unlock_timestamp",
+          "type": {
+            "option": "i64"
+          }
+        },
+        {
+          "name": "inactivity_period",
+          "type": {
+            "option": "i64"
+          }
+        },
+        {
+          "name": "beneficiary",
+          "type": "pubkey"
+        },
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "multisig_secured",
+          "type": "bool"
+        }
+      ]
+    },
+    {
+      "name": "create_document_capsule",
+      "discriminator": [
+        148,
+        85,
+        73,
+        157,
+        237,
+        128,
+        159,
+        90
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "capsule_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  97,
+                  112,
+                  115,
+                  117,
+                  108,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "signer"
+              },
+              {
+                "kind": "arg",
+                "path": "capsule_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "capsule_id",
+          "type": "string"
+        },
+        {
+          "name": "unlock_type",
+          "type": {
+            "defined": {
+              "name": "UnlockType"
+            }
+          }
+        },
+        {
+          "name": "unlock_timestamp",
+          "type": {
+            "option": "i64"
+          }
+        },
+        {
+          "name": "inactivity_period",
+          "type": {
+            "option": "i64"
+          }
+        },
+        {
+          "name": "beneficiary",
+          "type": "pubkey"
+        },
+        {
+          "name": "document_uri",
+          "type": "string"
+        },
+        {
+          "name": "document_format",
+          "type": "string"
+        },
+        {
+          "name": "multisig_secured",
+          "type": "bool"
+        }
+      ]
+    },
+    {
+      "name": "create_message_capsule",
+      "discriminator": [
+        173,
+        183,
+        179,
+        173,
+        176,
+        49,
+        43,
+        213
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "capsule_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  97,
+                  112,
+                  115,
+                  117,
+                  108,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "signer"
+              },
+              {
+                "kind": "arg",
+                "path": "capsule_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "capsule_id",
+          "type": "string"
+        },
+        {
+          "name": "unlock_type",
+          "type": {
+            "defined": {
+              "name": "UnlockType"
+            }
+          }
+        },
+        {
+          "name": "unlock_timestamp",
+          "type": {
+            "option": "i64"
+          }
+        },
+        {
+          "name": "inactivity_period",
+          "type": {
+            "option": "i64"
+          }
+        },
+        {
+          "name": "beneficiary",
+          "type": "pubkey"
+        },
+        {
+          "name": "message",
+          "type": "string"
+        },
+        {
+          "name": "multisig_secured",
+          "type": "bool"
+        }
+      ]
+    },
+    {
+      "name": "create_nft_capsule",
+      "discriminator": [
+        36,
+        22,
+        54,
+        223,
+        18,
+        153,
+        239,
+        72
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "capsule_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  97,
+                  112,
+                  115,
+                  117,
+                  108,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "signer"
+              },
+              {
+                "kind": "arg",
+                "path": "capsule_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "asset_nft_mint",
+          "writable": true
+        },
+        {
+          "name": "asset_nft_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  97,
+                  112,
+                  115,
+                  117,
+                  108,
+                  101,
+                  95,
+                  97,
+                  115,
+                  115,
+                  101,
+                  116,
+                  95,
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "asset_nft_mint"
+              },
+              {
+                "kind": "arg",
+                "path": "capsule_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user_asset_nft_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "signer"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "asset_nft_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "capsule_id",
+          "type": "string"
+        },
+        {
+          "name": "unlock_type",
+          "type": {
+            "defined": {
+              "name": "UnlockType"
+            }
+          }
+        },
+        {
+          "name": "unlock_timestamp",
+          "type": {
+            "option": "i64"
+          }
+        },
+        {
+          "name": "inactivity_period",
+          "type": {
+            "option": "i64"
+          }
+        },
+        {
+          "name": "beneficiary",
+          "type": "pubkey"
+        },
+        {
+          "name": "multisig_secured",
+          "type": "bool"
+        }
+      ]
+    },
+    {
+      "name": "create_sol_crypto_capsule",
+      "discriminator": [
+        101,
+        230,
+        58,
+        134,
+        59,
+        46,
+        48,
+        245
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "capsule_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  97,
+                  112,
+                  115,
+                  117,
+                  108,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "signer"
+              },
+              {
+                "kind": "arg",
+                "path": "capsule_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "capsule_id",
+          "type": "string"
+        },
+        {
+          "name": "unlock_type",
+          "type": {
+            "defined": {
+              "name": "UnlockType"
+            }
+          }
+        },
+        {
+          "name": "unlock_timestamp",
+          "type": {
+            "option": "i64"
+          }
+        },
+        {
+          "name": "inactivity_period",
+          "type": {
+            "option": "i64"
+          }
+        },
+        {
+          "name": "beneficiary",
+          "type": "pubkey"
+        },
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "multisig_secured",
+          "type": "bool"
+        }
+      ]
+    },
+    {
+      "name": "enable_multisig",
+      "discriminator": [
+        122,
+        152,
+        144,
+        139,
+        93,
+        117,
+        169,
+        52
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "capsule_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  97,
+                  112,
+                  115,
+                  117,
+                  108,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "signer"
+              },
+              {
+                "kind": "arg",
+                "path": "capsule_id"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "capsule_id",
+          "type": "string"
+        },
+        {
+          "name": "approval_lists",
+          "type": {
+            "vec": "pubkey"
+          }
+        },
+        {
+          "name": "approval_threshold",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "execute_capsule_release",
+      "discriminator": [
+        249,
+        135,
+        192,
+        20,
+        34,
+        61,
+        33,
+        246
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "capsule_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  97,
+                  112,
+                  115,
+                  117,
+                  108,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "capsule_account.owner",
+                "account": "Capsule"
+              },
+              {
+                "kind": "arg",
+                "path": "capsule_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "config_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "capsule_id",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "execute_crypto_capsule_release",
+      "discriminator": [
+        3,
+        67,
+        43,
+        119,
+        93,
+        210,
+        180,
+        40
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "capsule_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  97,
+                  112,
+                  115,
+                  117,
+                  108,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "capsule_account.owner",
+                "account": "Capsule"
+              },
+              {
+                "kind": "arg",
+                "path": "capsule_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "config_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "asset_mint",
+          "writable": true
+        },
+        {
+          "name": "asset_token_vault",
+          "writable": true
+        },
+        {
+          "name": "beneficiary_token_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "signer"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "asset_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "capsule_id",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "execute_nft_capsule_release",
+      "discriminator": [
+        247,
+        97,
+        158,
+        39,
+        234,
+        37,
+        77,
+        46
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "capsule_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  97,
+                  112,
+                  115,
+                  117,
+                  108,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "capsule_account.owner",
+                "account": "Capsule"
+              },
+              {
+                "kind": "arg",
+                "path": "capsule_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "config_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "asset_mint",
+          "writable": true
+        },
+        {
+          "name": "asset_nft_vault",
+          "writable": true
+        },
+        {
+          "name": "beneficiary_nft_account",
+          "writable": true
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "capsule_id",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "execute_sol_capsule_release",
+      "discriminator": [
+        247,
+        231,
+        16,
+        177,
+        82,
+        202,
+        2,
+        226
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "capsule_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  97,
+                  112,
+                  115,
+                  117,
+                  108,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "capsule_account.owner",
+                "account": "Capsule"
+              },
+              {
+                "kind": "arg",
+                "path": "capsule_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "config_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "capsule_id",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "initialize_config",
+      "discriminator": [
+        208,
+        127,
+        21,
+        1,
+        194,
+        190,
+        196,
+        70
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "fee_vault",
+          "writable": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "fee_bps",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "propose_release",
+      "discriminator": [
+        156,
+        43,
+        186,
+        24,
+        116,
+        44,
+        17,
+        71
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "capsule_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  97,
+                  112,
+                  115,
+                  117,
+                  108,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "capsule_account.owner",
+                "account": "Capsule"
+              },
+              {
+                "kind": "arg",
+                "path": "capsule_id"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "capsule_id",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "register_crypto",
+      "discriminator": [
+        226,
+        174,
+        231,
+        52,
+        169,
+        60,
+        194,
+        46
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "mint",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "register_document_type",
+      "discriminator": [
+        173,
+        220,
+        158,
+        220,
+        133,
+        2,
+        115,
+        84
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "format",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "sign_recovery",
+      "discriminator": [
+        19,
+        61,
+        118,
+        173,
+        239,
+        233,
+        181,
+        246
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "capsule_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  97,
+                  112,
+                  115,
+                  117,
+                  108,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "capsule_account.owner",
+                "account": "Capsule"
+              },
+              {
+                "kind": "arg",
+                "path": "capsule_id"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "capsule_id",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "update_multisig_recovery",
+      "discriminator": [
+        80,
+        149,
+        165,
+        186,
+        214,
+        40,
+        226,
+        246
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "capsule_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  97,
+                  112,
+                  115,
+                  117,
+                  108,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "capsule_account.owner",
+                "account": "Capsule"
+              },
+              {
+                "kind": "arg",
+                "path": "capsule_id"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "capsule_id",
+          "type": "string"
+        },
+        {
+          "name": "approval_lists",
+          "type": {
+            "option": {
+              "vec": "pubkey"
+            }
+          }
+        },
+        {
+          "name": "approval_threshold",
+          "type": {
+            "option": "u8"
+          }
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Capsule",
+      "discriminator": [
+        212,
+        231,
+        77,
+        219,
+        58,
+        13,
+        118,
+        241
+      ]
+    },
+    {
+      "name": "Config",
+      "discriminator": [
+        155,
+        12,
+        170,
+        224,
+        30,
+        250,
+        204,
+        130
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "CapsuleCheckIn",
+      "discriminator": [
+        169,
+        195,
+        205,
+        240,
+        48,
+        161,
+        167,
+        20
+      ]
+    },
+    {
+      "name": "CapsuleCreated",
+      "discriminator": [
+        113,
+        132,
+        247,
+        198,
+        217,
+        47,
+        201,
+        223
+      ]
+    },
+    {
+      "name": "CapsuleProposalRelease",
+      "discriminator": [
+        186,
+        13,
+        191,
+        151,
+        248,
+        182,
+        185,
+        216
+      ]
+    },
+    {
+      "name": "CapsuleReleased",
+      "discriminator": [
+        108,
+        54,
+        129,
+        79,
+        211,
+        228,
+        173,
+        86
+      ]
+    },
+    {
+      "name": "CapsuleUnlocked",
+      "discriminator": [
+        225,
+        147,
+        157,
+        140,
+        191,
+        11,
+        31,
+        94
+      ]
+    },
+    {
+      "name": "ConfigInitialized",
+      "discriminator": [
+        181,
+        49,
+        200,
+        156,
+        19,
+        167,
+        178,
+        91
+      ]
+    },
+    {
+      "name": "CryptocurrencyRegistered",
+      "discriminator": [
+        65,
+        30,
+        92,
+        69,
+        40,
+        108,
+        208,
+        106
+      ]
+    },
+    {
+      "name": "DocumentTypeRegistered",
+      "discriminator": [
+        201,
+        78,
+        205,
+        252,
+        142,
+        146,
+        101,
+        124
+      ]
+    },
+    {
+      "name": "MultisigEnabled",
+      "discriminator": [
+        104,
+        76,
+        229,
+        86,
+        65,
+        8,
+        182,
+        39
+      ]
+    },
+    {
+      "name": "NFTRegistered",
+      "discriminator": [
+        219,
+        161,
+        34,
+        252,
+        91,
+        8,
+        93,
+        21
+      ]
+    },
+    {
+      "name": "RecoveryCancelled",
+      "discriminator": [
+        191,
+        25,
+        236,
+        86,
+        25,
+        77,
+        117,
+        96
+      ]
+    },
+    {
+      "name": "RecoveryConfigUpdated",
+      "discriminator": [
+        207,
+        108,
+        179,
+        255,
+        245,
+        62,
+        103,
+        126
+      ]
+    },
+    {
+      "name": "RecoverySigned",
+      "discriminator": [
+        76,
+        168,
+        96,
+        58,
+        177,
+        160,
+        210,
+        41
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "Unauthorized",
+      "msg": "Unauthorized access"
+    },
+    {
+      "code": 6001,
+      "name": "DuplicateAsset",
+      "msg": "Duplicate Asset"
+    },
+    {
+      "code": 6002,
+      "name": "InvalidFormat",
+      "msg": "Invalid Format"
+    },
+    {
+      "code": 6003,
+      "name": "InvalidAsset",
+      "msg": "Invalid Asset"
+    },
+    {
+      "code": 6004,
+      "name": "InvalidMint",
+      "msg": "Invalid Mint"
+    },
+    {
+      "code": 6005,
+      "name": "InvalidNFTMint",
+      "msg": "Invalid NFT Mint"
+    },
+    {
+      "code": 6006,
+      "name": "InvalidTokenAccount",
+      "msg": "Invalid Token Account"
+    },
+    {
+      "code": 6007,
+      "name": "MathOverflow",
+      "msg": "Math Overflow"
+    },
+    {
+      "code": 6008,
+      "name": "InsufficientFunds",
+      "msg": "Insufficient Funds"
+    },
+    {
+      "code": 6009,
+      "name": "InvalidAssetContent",
+      "msg": "Invalid Asset Content"
+    },
+    {
+      "code": 6010,
+      "name": "InvalidAssetFormat",
+      "msg": "Invalid Asset Format"
+    },
+    {
+      "code": 6011,
+      "name": "UnsupportedDocumentFormat",
+      "msg": "Unsupported Document Format"
+    },
+    {
+      "code": 6012,
+      "name": "UnsupportedCryptocurrency",
+      "msg": "Unsupported Cryptocurrency"
+    },
+    {
+      "code": 6013,
+      "name": "InvalidAction",
+      "msg": "Invalid Action"
+    },
+    {
+      "code": 6014,
+      "name": "InvalidAssetVault",
+      "msg": "Invalid Asset Vault"
+    },
+    {
+      "code": 6015,
+      "name": "InvalidInactivityPeriod",
+      "msg": "Invalid Inactivity Period"
+    },
+    {
+      "code": 6016,
+      "name": "CapsuleNotLocked",
+      "msg": "Capsule Not Locked"
+    },
+    {
+      "code": 6017,
+      "name": "CapsuleLocked",
+      "msg": "Capsule Locked"
+    },
+    {
+      "code": 6018,
+      "name": "ConditionsNotMet",
+      "msg": "Conditions Not Met"
+    },
+    {
+      "code": 6019,
+      "name": "MultisigNotEnabled",
+      "msg": "Multisig Not Enabled"
+    },
+    {
+      "code": 6020,
+      "name": "ProposalAlreadyInitiated",
+      "msg": "Proposal Already Initiated"
+    },
+    {
+      "code": 6021,
+      "name": "UnauthorizedProposer",
+      "msg": "Unauthorized proposer"
+    },
+    {
+      "code": 6022,
+      "name": "NoRecoveryProposal",
+      "msg": "No Recovery Proposal"
+    },
+    {
+      "code": 6023,
+      "name": "RecoveryProposalNotEmpty",
+      "msg": "Recovery Proposal Not Empty"
+    },
+    {
+      "code": 6024,
+      "name": "InvalidApprovalKeys",
+      "msg": "Invalid Approval Keys"
+    },
+    {
+      "code": 6025,
+      "name": "InvalidApprovalThreshold",
+      "msg": "Invalid Approval Threshold"
+    },
+    {
+      "code": 6026,
+      "name": "InvalidApprovalConfig",
+      "msg": "Invalid Approval Config"
+    },
+    {
+      "code": 6027,
+      "name": "MissingUnlockTimestamp",
+      "msg": "Missing Unlock Timestamp"
+    },
+    {
+      "code": 6028,
+      "name": "MissingInactivityPeriod",
+      "msg": "Missing Inactivity Period"
+    },
+    {
+      "code": 6029,
+      "name": "InvalidUnlockTimestamp",
+      "msg": "Invalid Unlock Timestamp"
+    }
+  ],
+  "types": [
+    {
+      "name": "AssetType",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "NFT"
+          },
+          {
+            "name": "Cryptocurrency"
+          },
+          {
+            "name": "Native"
+          },
+          {
+            "name": "Documents"
+          },
+          {
+            "name": "Message"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Capsule",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "capsule_id",
+            "type": "string"
+          },
+          {
+            "name": "unlock_type",
+            "type": {
+              "defined": {
+                "name": "UnlockType"
+              }
+            }
+          },
+          {
+            "name": "asset_mint",
+            "type": {
+              "option": "pubkey"
+            }
+          },
+          {
+            "name": "asset_type",
+            "type": {
+              "defined": {
+                "name": "AssetType"
+              }
+            }
+          },
+          {
+            "name": "unlock_timestamp",
+            "type": {
+              "option": "i64"
+            }
+          },
+          {
+            "name": "inactivity_period",
+            "type": {
+              "option": "i64"
+            }
+          },
+          {
+            "name": "last_checkin",
+            "type": {
+              "option": "i64"
+            }
+          },
+          {
+            "name": "amount",
+            "type": {
+              "option": "u64"
+            }
+          },
+          {
+            "name": "asset_token_vault",
+            "type": {
+              "option": "pubkey"
+            }
+          },
+          {
+            "name": "asset_token_vault_bump",
+            "type": {
+              "option": "u8"
+            }
+          },
+          {
+            "name": "asset_nft_vault",
+            "type": {
+              "option": "pubkey"
+            }
+          },
+          {
+            "name": "asset_nft_vault_bump",
+            "type": {
+              "option": "u8"
+            }
+          },
+          {
+            "name": "asset_uri",
+            "type": {
+              "option": "string"
+            }
+          },
+          {
+            "name": "document_format",
+            "type": {
+              "option": "string"
+            }
+          },
+          {
+            "name": "encrypted_message",
+            "type": {
+              "option": "string"
+            }
+          },
+          {
+            "name": "is_locked",
+            "type": "bool"
+          },
+          {
+            "name": "beneficiary",
+            "type": "pubkey"
+          },
+          {
+            "name": "multisig_secured",
+            "type": "bool"
+          },
+          {
+            "name": "approval_lists",
+            "type": {
+              "option": {
+                "vec": "pubkey"
+              }
+            }
+          },
+          {
+            "name": "approval_threshold",
+            "type": {
+              "option": "u8"
+            }
+          },
+          {
+            "name": "proposals",
+            "type": {
+              "option": {
+                "defined": {
+                  "name": "RecoveryProposal"
+                }
+              }
+            }
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CapsuleCheckIn",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "capsule_id",
+            "type": "string"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CapsuleCreated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "capsule_id",
+            "type": "string"
+          },
+          {
+            "name": "asset_type",
+            "type": {
+              "defined": {
+                "name": "AssetType"
+              }
+            }
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CapsuleProposalRelease",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "capsule_id",
+            "type": "string"
+          },
+          {
+            "name": "proposer",
+            "type": "pubkey"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CapsuleReleased",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "capsule_id",
+            "type": "string"
+          },
+          {
+            "name": "beneficiary",
+            "type": "pubkey"
+          },
+          {
+            "name": "asset_type",
+            "type": {
+              "defined": {
+                "name": "AssetType"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "CapsuleUnlocked",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "capsule_id",
+            "type": "string"
+          },
+          {
+            "name": "reason",
+            "type": {
+              "defined": {
+                "name": "UnlockReason"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Config",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "type": "pubkey"
+          },
+          {
+            "name": "supported_cryptocurrency",
+            "type": {
+              "vec": "pubkey"
+            }
+          },
+          {
+            "name": "supported_documents",
+            "type": {
+              "vec": "string"
+            }
+          },
+          {
+            "name": "total_capsules",
+            "type": "u64"
+          },
+          {
+            "name": "total_crypto_capsules",
+            "type": "u64"
+          },
+          {
+            "name": "total_nft_capsules",
+            "type": "u64"
+          },
+          {
+            "name": "total_document_capsules",
+            "type": "u64"
+          },
+          {
+            "name": "total_message_capsules",
+            "type": "u64"
+          },
+          {
+            "name": "total_retrieved_capsules",
+            "type": "u64"
+          },
+          {
+            "name": "fee_vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "fee_bps",
+            "type": "u8"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ConfigInitialized",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CryptocurrencyRegistered",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "mint",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DocumentTypeRegistered",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "format",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MultisigEnabled",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "capsule_id",
+            "type": "string"
+          },
+          {
+            "name": "approval_lists",
+            "type": {
+              "vec": "pubkey"
+            }
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "NFTRegistered",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "mint",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RecoveryCancelled",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "capsule_id",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RecoveryConfigUpdated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "capsule_id",
+            "type": "string"
+          },
+          {
+            "name": "threshold",
+            "type": {
+              "option": "u8"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "RecoveryProposal",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "proposer",
+            "type": "pubkey"
+          },
+          {
+            "name": "signatures",
+            "type": {
+              "vec": "pubkey"
+            }
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RecoverySigned",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "capsule_id",
+            "type": "string"
+          },
+          {
+            "name": "signer",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "UnlockReason",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "TimeBased"
+          },
+          {
+            "name": "Inactivity"
+          },
+          {
+            "name": "Recovery"
+          }
+        ]
+      }
+    },
+    {
+      "name": "UnlockType",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "TimeBased"
+          },
+          {
+            "name": "InactivityBased"
+          }
+        ]
+      }
+    }
+  ]
+}

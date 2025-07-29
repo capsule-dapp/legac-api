@@ -1,7 +1,17 @@
 import { z } from 'zod'
 import { validatePublicKey } from '../helpers/utils';
 
-export const AuthSchema = z.object({
+export const RegisterSchema = z.object({
+    fullname: z.string().min(1, {message: 'fullname is required'}),
+    email: z.email({message: 'email address is invalid'}),
+    password: z.string()
+        .refine(
+            value => /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%\^\&\*\(\)])(?=.{6,})/.test(value),
+            {message: 'password must contain uppercase, lowercase, special symbols and numbers'}
+        )
+});
+
+export const LoginSchema = z.object({
     email: z.email({message: 'email address is invalid'}),
     password: z.string()
         .refine(
@@ -23,4 +33,4 @@ export const UpdateWalletSchema = z.object({
     }, {message: 'wallet address is invalid'})
 })
 
-export type AuthRequest = z.infer<typeof AuthSchema>;
+export type RegisterRequest = z.infer<typeof RegisterSchema>;

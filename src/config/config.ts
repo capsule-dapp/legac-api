@@ -15,7 +15,8 @@ export const config = {
   smtpSecure: process.env.SMTP_SECURE === 'true',
   smtpUser: process.env.SMTP_USER || 'your_email@gmail.com',
   smtpPass: process.env.SMTP_PASS || 'your_app_specific_password',
-  rpcEndpoint: process.env.RPC_ENDPOINT || 'https://api.mainnet-beta.solana.com'
+  rpcEndpoint: process.env.RPC_ENDPOINT || 'https://api.mainnet-beta.solana.com',
+  encryptionKey: process.env.ENCRYPTION_KEY as string
 };
 
 export const connection = new Connection(config.rpcEndpoint)

@@ -1,8 +1,6 @@
 import { UserRepository } from '../repositories/user.repository';
 import { EmailService } from '../services/email.service';
 import { JwtService } from '../services/jwt.service';
-import { validatePublicKey } from '../helpers/utils';
-import { AuthSchema, UpdateWalletSchema } from '../schemas/auth.schema';
 import { Request, Response } from 'express';
 import { config } from '../config/config';
 import { logger } from '../config/logger';
@@ -10,15 +8,21 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { z } from 'zod'
 
+import {
+  LoginSchema,
+  RegisterSchema,
+  UpdateWalletSchema
+} from '../schemas/auth.schema';
+
 const userRepository = new UserRepository();
 const emailService = new EmailService();
 const jwtService = new JwtService();
 
 export const register = async (req: Request, res: Response) => {
   try {
-    const { email, password } = AuthSchema.parse(req.body);
+    const { fullname, email, password } = RegisterSchema.parse(req.body);
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await userRepository.create({ email, password: hashedPassword });
+    const user = await userRepository.create({ fullname, email, password: hashedPassword });
 
     // generate access and refresh tokens
     const accessToken = jwtService.generateAccessToken(user.id);
@@ -41,7 +45,7 @@ export const register = async (req: Request, res: Response) => {
 
 export const login = async (req: Request, res: Response) => {
   try {
-    const { email, password } = req.body;
+    const { email, password } = LoginSchema.parse(req.body);
     const user = await userRepository.findByEmail(email);
     if (!user || !await bcrypt.compare(password, user.password)) {
       logger.warn(`Invalid login attempt for ${email}`);

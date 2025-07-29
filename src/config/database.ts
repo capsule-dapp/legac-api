@@ -13,28 +13,46 @@ export const initDb = async () => {
     await pool.query(`
       CREATE TABLE IF NOT EXISTS users (
         id SERIAL PRIMARY KEY,
+        fullname VARCHAR(255) NOT NULL,
         email VARCHAR(255) UNIQUE NOT NULL,
         password TEXT NOT NULL,
         secretKey INTEGER,
-        wallet_address TEXT
+        wallet_address TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
 
       CREATE TABLE IF NOT EXISTS heirs (
         id SERIAL PRIMARY KEY,
+        user_id INTEGER NOT NULL UNIQUE REFERENCES users(id) ON DELETE CASCADE,
         fullname VARCHAR(255) NOT NULL,
         email VARCHAR(255) NOT NULL,
         title VARCHAR(60) NOT NULL,
-        wallet_address VARCHAR(255)
+        age INTEGER NOT NULL,
+        wallet_address TEXT NOT NULL,
+        wallet_secret TEXT NOT NULL,
+        temporary_password TEXT,
+        password_expiry TIMESTAMP,
+        checked_in TIMESTAMP,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
 
       CREATE TABLE IF NOT EXISTS capsules (
         id SERIAL PRIMARY KEY,
-        capsuleAddress VARCHAR(255) NOT NULL,
-        unlockType VARCHAR(255),
-        userId INTEGER REFERENCES users(id),
-        unlockTimestamp TIMESTAMP,
-        inactivityPeriod INTEGER,
-        assetType VARCHAR(255)
+        capsule_type VARCHAR(255),
+        capsule_unique_id VARCHAR(255) NOT NULL,
+        capsule_address TEXT NOT NULL,
+        heir_id INTEGER NOT NULL REFERENCES heirs(id) ON DELETE RESTRICT,
+        user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE RESTRICT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+
+      CREATE TABLE IF NOT EXISTS user_capsules (
+        user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE RESTRICT,
+        capsule_id INTEGER NOT NULL REFERENCES capsules(id) ON DELETE RESTRICT,
+        UNIQUE(user_id, capsule_id)
       );
     `);
     console.log('Database initialized');

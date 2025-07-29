@@ -17,6 +17,7 @@ const router = Router();
  *           schema:
  *             type: object
  *             properties:
+ *               fullname: { type: string }
  *               email: { type: string }
  *               password: { type: string }
  *     responses:
