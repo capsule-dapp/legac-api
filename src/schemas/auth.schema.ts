@@ -25,8 +25,7 @@ export const UpdateWalletSchema = z.object({
         .min(1, {message: "wallet address is required"})
         .refine(address => {
         try {
-            validatePublicKey(address)
-            return true;
+            return validatePublicKey(address)
         } catch {
             return false;
         }

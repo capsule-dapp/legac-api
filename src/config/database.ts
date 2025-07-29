@@ -44,7 +44,7 @@ export const initDb = async () => {
         capsule_unique_id VARCHAR(255) NOT NULL,
         capsule_address TEXT NOT NULL,
         heir_id INTEGER NOT NULL REFERENCES heirs(id) ON DELETE RESTRICT,
-        user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE RESTRICT,
+        multisig_enabled BOOLEAN DEFAULT FALSE,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );

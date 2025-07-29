@@ -11,8 +11,7 @@ export const CreateCapsuleSchema = z.object({
         .min(1, { message: 'Capsule address is required'})
         .refine(address => {
             try {
-                !validatePublicKey(address)
-                true
+                return !validatePublicKey(address)
             } catch(error) {
                 false
             }

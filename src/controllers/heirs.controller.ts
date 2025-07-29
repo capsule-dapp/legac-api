@@ -28,10 +28,10 @@ export const index = async (req: Request & { user?: { userId: number } }, res: R
             return res.status(404).json({ error: 'No heir records found' });
         }
 
-        res.status(200).json({...heir});
+        return res.status(200).json({...heir});
     } catch (error) {
         logger.error(`could not retrieve heir record: ${error}`);
-        res.status(400).json({ error: 'Could not retrieve heir record' });
+        return res.status(400).json({ error: 'Could not retrieve heir record' });
     }
 }
 
@@ -58,7 +58,7 @@ export const store = async (req: Request & { user?: { userId: number } }, res: R
         const wallet = walletService.create()
 
         logger.info("storing heir record")
-        logger.info(`${fullname} ${email}, ${title}, ${age}, ${userId}, ${wallet.publicKey}, ${wallet.secretKey}`)
+        logger.info('Storing heir record')
         const newHeir = await heirRepository.create({fullname, email, title, age}, userId, wallet.publicKey, wallet.secretKey);
         if (!newHeir) {
             logger.warn("Could not create heir record")
@@ -69,10 +69,10 @@ export const store = async (req: Request & { user?: { userId: number } }, res: R
     } catch (error) {
         if (error instanceof z.ZodError) {
             logger.warn(`validation failed for creating heirs:\n ${z.prettifyError(error)}`)
-            res.status(400).json({error: 'validation failed', details: z.treeifyError(error)})
+            return res.status(400).json({error: 'validation failed', details: z.treeifyError(error)})
         }
 
         logger.error(`could not store heir record: ${error}`);
-        res.status(400).json({ error: 'Could not store heir record' });
+        return res.status(400).json({ error: 'Could not store heir record' });
     }
 }

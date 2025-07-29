@@ -10,6 +10,7 @@ const router = Router();
  *   post:
  *     summary: Store a capsule record
  *     tags: [Capsules]
+ *     security: [{ bearerAuth: [] }]
  *     requestBody:
  *       required: true
  *       content:

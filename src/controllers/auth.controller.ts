@@ -32,14 +32,14 @@ export const register = async (req: Request, res: Response) => {
     await emailService.sendWelcomeEmail(email, email.split('@')[0]);
 
     logger.info(`User registered: ${email} (ID: ${user.id})`);
-    res.status(201).json({ message: 'User created', accessToken, refreshToken });
+    return res.status(201).json({ message: 'User created', accessToken, refreshToken });
   } catch (error) {
     if (error instanceof z.ZodError) {
       logger.warn(`validation failed for creating heirs: ${z.prettifyError(error)}`)
-      res.status(400).json({error: 'validation failed', details: z.treeifyError(error)})
+      return res.status(400).json({error: 'validation failed', details: z.treeifyError(error)})
     }
     logger.error(`Registration failed: ${error}`);
-    res.status(400).json({ error: 'User already exists' });
+    return res.status(400).json({ error: 'User already exists' });
   }
 };
 
@@ -57,14 +57,14 @@ export const login = async (req: Request, res: Response) => {
     const refreshToken = jwtService.generateRefreshToken(user.id);
 
     logger.info(`User logged in: ${email} (ID: ${user.id})`);
-    res.json({ accessToken, refreshToken });
+    return res.json({ accessToken, refreshToken });
   } catch (error) {
     if (error instanceof z.ZodError) {
       logger.warn(`validation failed for creating heirs: ${z.prettifyError(error)}`)
-      res.status(400).json({error: 'validation failed', details: z.treeifyError(error)})
+      return res.status(400).json({error: 'validation failed', details: z.treeifyError(error)})
     }
     logger.error(`Login failed: ${error}`);
-    res.status(400).json({ error: 'Login failed' });
+    return res.status(400).json({ error: 'Login failed' });
   }
 };
 
@@ -88,14 +88,14 @@ export const updateWallet = async (req: Request & { user?: { userId: number } },
       return res.status(400).json({ error: 'Wallet address already set and cannot be updated' });
     }
     logger.info(`Wallet updated for user ID ${userId}`);
-    res.json({ message: 'Wallet updated' });
+    return res.json({ message: 'Wallet updated' });
   } catch (error: any) {
     if (error instanceof z.ZodError) {
       logger.warn(`validation failed for creating heirs: ${z.prettifyError(error)}`)
-      res.status(400).json({error: 'validation failed', details: z.treeifyError(error)})
+      return res.status(400).json({error: 'validation failed', details: z.treeifyError(error)})
     }
     logger.error(`Wallet update failed for user: ${error.message}`);
-    res.status(400).json({ error: error.message });
+    return res.status(400).json({ error: error.message });
   }
 };
 
@@ -111,15 +111,15 @@ export const refreshToken = async (req: Request, res: Response) => {
 
     const accessToken = jwtService.generateAccessToken(decoded.userId);
     logger.info(`Access token refreshed for user ID ${decoded.userId}`);
-    res.json({ accessToken });
+    return res.json({ accessToken });
 
   } catch (error) {
     if (error instanceof z.ZodError) {
       logger.warn(`validation failed for creating heirs: ${z.prettifyError(error)}`)
-      res.status(400).json({error: 'validation failed', details: z.treeifyError(error)})
+      return res.status(400).json({error: 'validation failed', details: z.treeifyError(error)})
     }
     logger.error(`Refresh token failed: ${error}`);
-    res.status(401).json({ error: 'Invalid refresh token' });
+    return res.status(401).json({ error: 'Invalid refresh token' });
   }
 };
 
@@ -138,13 +138,13 @@ export const getAuthenticatedUser = async (req: Request & { user?: { userId: num
     }
 
     logger.info(`Fetched details for user ID ${userId}: ${user.email}, ${user.wallet_address}`);
-    res.json({
+    return res.json({
       id: user.id,
       email: user.email,
       walletAddress: user.wallet_address,
     });
   } catch (error: any) {
     logger.error(`Failed to fetch user details for ID ${userId}: ${error.message}`);
-    res.status(400).json({ error: 'Failed to fetch user details' });
+    return res.status(400).json({ error: 'Failed to fetch user details' });
   }
 };
