@@ -34,6 +34,17 @@ export class HeirRepository {
         }
     }
 
+    async find(id: number, user_id: number) {
+        const query = `
+            SELECT * FROM heirs
+            WHERE id = $1 AND user_id = $2
+        `;
+
+        const values = [id, user_id];
+        const result: QueryResult<HeirResponse> = await pool.query(query, values);
+        return result.rows[0];
+    }
+
     async findByUser(user_id: number) {
         const query = `
             SELECT user_id, fullname, email, title, wallet_address FROM heirs
