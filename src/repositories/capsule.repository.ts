@@ -4,7 +4,14 @@ import { CreateCapsuleType } from "../schemas/capsule.schema";
 
 export class CapsuleRepository {
     async findAll(userID: number) {
+        const query = `
+            SELECT capsules.id, capsules.capsule_type, capsules.capsule_unique_id, capsules.capsule_address, capsules.heir_id, capsules.multisig_enabled FROM capsules LEFT JOIN user_capsules
+            ON capsules.id = user_capsules.capsule_id
+            WHERE user_capsules.user_id = $1
+        `;
 
+        const result = await pool.query(query, [userID]);
+        return result.rows
     }
 
     async create(userID: number, capsule: CreateCapsuleType) {

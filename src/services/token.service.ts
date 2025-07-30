@@ -14,6 +14,15 @@ export interface TokenAsset {
     balance: number | null;
 }
 
+export interface NFTAsset {
+    mint: string;
+    symbol: string;
+    name: string;
+    uri: string;
+    edition?: string | null;
+    collection?: string | null;
+}
+
 export class TokenService {
     private umi;
     private connection;
@@ -52,6 +61,23 @@ export class TokenService {
     }
 
     async getWalletNFTs(address: string) {
+        const assets = await fetchAllDigitalAssetWithTokenByOwner(
+            this.umi,
+            publicKey(address)
+        )
 
+        const nftAssets = assets.filter(asset => asset.mint.decimals == 0);
+        return Promise.all(
+            nftAssets.map(async asset => {
+                return {
+                    mint: asset.mint.publicKey,
+                    symbol: asset.metadata.symbol,
+                    name: asset.metadata.name,
+                    uri: asset.metadata.uri,
+                    edition: asset.edition?.publicKey,
+                    collection: asset.metadata.collection.__option == 'Some' ? asset.metadata.collection.value : null
+                } as NFTAsset;
+            })
+        );
     }
 }

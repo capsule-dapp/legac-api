@@ -10,7 +10,6 @@ export class Cache {
     async connect() {
         await client.connect()
     }
-
     async get(key: string) {
         const data = await client.get(key);
         return JSON.parse(data as any);
@@ -19,6 +18,10 @@ export class Cache {
     async set(key: string, value: string, ttl: number) {
         await client.set(key, JSON.stringify(value));
         await client.expire(key, ttl);
+    }
+
+    async delete(key: string) {
+        await client.del(key)
     }
 
     async getOrSet(key: string, value: any, ttl: number) {

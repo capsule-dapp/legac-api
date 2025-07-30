@@ -10,6 +10,22 @@ const capsuleRepository = new CapsuleRepository();
 const heirRepository = new HeirRepository();
 const cacheService = new Cache();
 
+export const index = async (req: Request & { user?: { userId: number } }, res: Response) => {
+    const userId = req.user?.userId;
+    if (!userId) {
+        logger.warn(`Unauthorized action: cannot create capsule`);
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const capsules = await cacheService.getOrSet(
+        `capsules_${userId}:all`,
+        await capsuleRepository.findAll(userId),
+        50
+    );
+
+    return res.status(200).json(capsules)
+}
+
 export const store = async (req: Request & { user?: { userId: number } }, res: Response) => {
     try {
         const payload = CreateCapsuleSchema.parse(req.body)
@@ -35,6 +51,10 @@ export const store = async (req: Request & { user?: { userId: number } }, res: R
 
         logger.info("store capsule information")
         await capsuleRepository.create(userId, payload)
+
+        logger.info('invalidating capsule cache')
+        await cacheService.delete(`capsules_${userId}:all`)
+
         return res.status(201).json({message: 'Capsule created successfully'})
     } catch (error) {
         if (error instanceof z.ZodError) {

@@ -1,8 +1,33 @@
 import { Router } from "express";
-import { store } from "../controllers/capsule.controller";
+import { index, store } from "../controllers/capsule.controller";
 import { authenticateToken } from "../middlewares/auth.middleware";
 
 const router = Router();
+
+/**
+* @swagger
+* /capsules:
+*   get:
+*     summary: Retrieve user capsules
+*     tags: [Capsules]
+*     security: [{ bearerAuth: [] }]
+*     responses:
+*       200:
+*          description: Retrieve user capsules
+*          content:
+*             application/json:
+*               schema:
+*                 type: object
+*                 properties:
+*                   id: { type: number }
+*                   capsule_type: { type: string }
+*                   capsule_unique_id: { type: string }
+*                   capsule_address: { type: string }
+*                   heir_id: { type: number }
+*                   multisig_enabled: { type: boolean }
+*       401: { description: Unauthorized access }
+*/
+router.get('/', authenticateToken, index)
 
 /**
  * @swagger
