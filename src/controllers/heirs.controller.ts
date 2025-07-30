@@ -37,7 +37,7 @@ export const index = async (req: Request & { user?: { userId: number } }, res: R
 
 export const store = async (req: Request & { user?: { userId: number } }, res: Response) => {
     try {
-        const { fullname, email, title, age } = createHeirSchema.parse(req.body);
+        const payload = createHeirSchema.parse(req.body);
         const userId = req.user?.userId;
         if (!userId) {
             logger.warn(`Unauthorized action: cannot create heir`);
@@ -59,7 +59,7 @@ export const store = async (req: Request & { user?: { userId: number } }, res: R
 
         logger.info("storing heir record")
         logger.info('Storing heir record')
-        const newHeir = await heirRepository.create({fullname, email, title, age}, userId, wallet.publicKey, wallet.secretKey);
+        const newHeir = await heirRepository.create(payload, userId, wallet.publicKey, wallet.secretKey);
         if (!newHeir) {
             logger.warn("Could not create heir record")
             res.status(500).json({error: 'could not create heir at the moment, try again later'})

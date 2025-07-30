@@ -5,7 +5,7 @@ import { CreateCapsuleType } from "../schemas/capsule.schema";
 export class CapsuleRepository {
     async findAll(userID: number) {
         const query = `
-            SELECT capsules.id, capsules.capsule_type, capsules.capsule_unique_id, capsules.capsule_address, capsules.heir_id, capsules.multisig_enabled FROM capsules LEFT JOIN user_capsules
+            SELECT capsules.id, capsules.capsule_type, capsules.capsule_unique_id, capsules.capsule_address, capsules.heir_id FROM capsules LEFT JOIN user_capsules
             ON capsules.id = user_capsules.capsule_id
             WHERE user_capsules.user_id = $1
         `;
@@ -16,11 +16,11 @@ export class CapsuleRepository {
 
     async create(userID: number, capsule: CreateCapsuleType) {
         const createCapsuleQuery = `
-            INSERT INTO capsules (capsule_type, capsule_unique_id, capsule_address, heir_id, multisig_enabled)
-            VALUES($1, $2, $3, $4, $5)
+            INSERT INTO capsules (capsule_type, capsule_unique_id, capsule_address, heir_id)
+            VALUES($1, $2, $3, $4)
             RETURNING *
         `;
-        const capsuleValues = [capsule.capsule_type, capsule.capsule_unique_id, capsule.capsule_address, capsule.heir_id, capsule.multisig_enabled];
+        const capsuleValues = [capsule.capsule_type, capsule.capsule_unique_id, capsule.capsule_address, capsule.heir_id];
         const capsuleResult = await pool.query(createCapsuleQuery, capsuleValues);
 
         const userCapsuleQuery = `

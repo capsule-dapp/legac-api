@@ -8,8 +8,8 @@ interface TokenPayload {
 
 export class JwtService {
 
-  generateAccessToken(userId: number): string {
-    return jwt.sign({ userId }, config.jwtSecret, { expiresIn: '1h' });
+  generateAccessToken(userId: number, role: 'user' | 'heir'): string {
+    return jwt.sign({ userId, role }, config.jwtSecret, { expiresIn: '1h' });
   }
 
   generateRefreshToken(userId: number): string {

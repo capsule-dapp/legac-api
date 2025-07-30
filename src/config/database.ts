@@ -16,10 +16,19 @@ export const initDb = async () => {
         fullname VARCHAR(255) NOT NULL,
         email VARCHAR(255) UNIQUE NOT NULL,
         password TEXT NOT NULL,
-        secretKey INTEGER,
+        pin INTEGER,
         wallet_address TEXT,
+        wallet_secret TEXT,
+        email_verified BOOLEAN NOT NULL DEFAULT false,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+
+      CREATE TABLE IF NOT EXISTS otps (
+        id SERIAL PRIMARY KEY,
+        email VARCHAR(60) UNIQUE NOT NULL,
+        code TEXT NOT NULL,
+        expires_in TIMESTAMP NOT NULL
       );
 
       CREATE TABLE IF NOT EXISTS heirs (
@@ -29,6 +38,9 @@ export const initDb = async () => {
         email VARCHAR(255) NOT NULL,
         title VARCHAR(60) NOT NULL,
         age INTEGER NOT NULL,
+        state VARCHAR(70) NOT NULL,
+        country VARCHAR(70) NOT NULL,
+        dob VARCHAR(100) NOT NULL,
         wallet_address TEXT NOT NULL,
         wallet_secret TEXT NOT NULL,
         temporary_password TEXT,
@@ -44,7 +56,6 @@ export const initDb = async () => {
         capsule_unique_id VARCHAR(255) NOT NULL,
         capsule_address TEXT NOT NULL,
         heir_id INTEGER NOT NULL REFERENCES heirs(id) ON DELETE RESTRICT,
-        multisig_enabled BOOLEAN DEFAULT FALSE,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
@@ -53,6 +64,14 @@ export const initDb = async () => {
         user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE RESTRICT,
         capsule_id INTEGER NOT NULL REFERENCES capsules(id) ON DELETE RESTRICT,
         UNIQUE(user_id, capsule_id)
+      );
+
+      CREATE TABLE IF NOT EXISTS capsule_security_questions (
+        id SERIAL PRIMARY KEY,
+        capsule_id INTEGER NOT NULL REFERENCES capsules(id) ON DELETE RESTRICT,
+        question TEXT NOT NULL,
+        answer TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
     `);
     console.log('Database initialized');

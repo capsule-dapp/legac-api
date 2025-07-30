@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { index, store } from "../controllers/heirs.controller";
-import { authenticateToken } from "../middlewares/auth.middleware";
+import { authenticateToken, restrictToRole } from "../middlewares/auth.middleware";
 
 const router = Router();
 
@@ -22,13 +22,16 @@ const router = Router();
 *                   fullname: { type: string }
 *                   email: { type: string }
 *                   title: { type: string }
+*                   state: { type: string }
+*                   country: { type: string }
+*                   dob: { type: string }
 *                   age: { type: number }
 *                   wallet_address: { type: string }
 *       201: { description: Heir record stored }
 *       404: { description: No heir record found }
 *       401: { description: Unauthorized access }
 */
-router.get('/', authenticateToken, index);
+router.get('/', authenticateToken, restrictToRole(['user']), index);
 
 /**
  * @swagger
@@ -47,12 +50,15 @@ router.get('/', authenticateToken, index);
  *               fullname: { type: string }
  *               email: { type: string }
  *               title: { type: string }
+ *               state: { type: string }
+ *               country: { type: string }
+ *               dob: { type: string }
  *               age: { type: number }
  *     responses:
  *       201: { description: Heir record stored }
  *       400: { description: Could not store record at the moment }
  *       401: { description: Unauthorized access }
  */
-router.post('/', authenticateToken, store);
+router.post('/', authenticateToken, restrictToRole(['user']), store);
 
 export default router;

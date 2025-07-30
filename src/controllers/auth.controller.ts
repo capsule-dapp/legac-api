@@ -11,10 +11,15 @@ import { z } from 'zod'
 import {
   LoginSchema,
   RegisterSchema,
-  UpdateWalletSchema
+  VerifyEmailSchema
 } from '../schemas/auth.schema';
+import { OtpRepository } from '../repositories/otp.repository';
+import { WalletService } from '../services/wallet.service';
+import { encrypt } from '../helpers/crypto';
 
 const userRepository = new UserRepository();
+const walletService = new WalletService();
+const otpRepository = new OtpRepository();
 const emailService = new EmailService();
 const jwtService = new JwtService();
 
@@ -24,12 +29,16 @@ export const register = async (req: Request, res: Response) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await userRepository.create({ fullname, email, password: hashedPassword });
 
+    // store otp data
+    const expires_in = new Date(Date.now() + 60 * 60 * 1000)
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    await otpRepository.create(email, code, expires_in)
+
     // generate access and refresh tokens
-    const accessToken = jwtService.generateAccessToken(user.id);
+    const accessToken = jwtService.generateAccessToken(user.id, 'user');
     const refreshToken = jwtService.generateRefreshToken(user.id);
 
-    // Send welcome email
-    await emailService.sendWelcomeEmail(email, email.split('@')[0]);
+    await emailService.sendVerificationEmail(email, fullname, code)
 
     logger.info(`User registered: ${email} (ID: ${user.id})`);
     return res.status(201).json({ message: 'User created', accessToken, refreshToken });
@@ -52,8 +61,11 @@ export const login = async (req: Request, res: Response) => {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
+    if (!user.email_verified)
+        return res.status(400).json({message: 'Email address not verified'})
+
     // generate access and refresh token
-    const accessToken = jwtService.generateAccessToken(user.id);
+    const accessToken = jwtService.generateAccessToken(user.id, 'user');
     const refreshToken = jwtService.generateRefreshToken(user.id);
 
     logger.info(`User logged in: ${email} (ID: ${user.id})`);
@@ -68,27 +80,35 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
-export const updateWallet = async (req: Request & { user?: { userId: number } }, res: Response) => {
-  try {
-    const { walletAddress } = UpdateWalletSchema.parse(req.body);
-    const userId = req.user?.userId;
-    if (!userId) {
-      logger.warn(`Unauthorized wallet update attempt`);
-      return res.status(401).json({ error: 'Unauthorized' });
-    }
+export const createWallet = async (req: Request & { user?: { userId: number; role: string } }, res: Response) => {
+  const userId = req.user?.userId;
+  if (!userId) {
+    logger.warn(`Unauthorized wallet update attempt`);
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
 
-    const user = await userRepository.updateWalletAddress(userId, walletAddress);
+  try {
+    const user = await userRepository.findById(userId);
     if (!user) {
-      logger.warn(`User not found for wallet update: ID ${userId}`);
+      logger.warn(`User not found: ID ${userId}`);
       return res.status(404).json({ error: 'User not found' });
     }
 
-    if (user.wallet_address && user.wallet_address !== walletAddress) {
-      logger.info(`Wallet update skipped for user ID ${userId}: wallet already set to ${user.wallet_address}`);
-      return res.status(400).json({ error: 'Wallet address already set and cannot be updated' });
+    if (user.wallet_address != null) {
+      logger.warn('wallet alreay generated for account')
+      return res.status(400).json({message: 'Wallet already generated for account'})
     }
+
+    logger.info('Generating wallet for user')
+    const generatedWallet = walletService.create();
+    await userRepository.updateWalletAddress(
+      userId,
+      generatedWallet.publicKey,
+      encrypt(generatedWallet.secretKey)
+    )
+
     logger.info(`Wallet updated for user ID ${userId}`);
-    return res.json({ message: 'Wallet updated' });
+    return res.json({ message: 'Wallet created' });
   } catch (error: any) {
     if (error instanceof z.ZodError) {
       logger.warn(`validation failed for creating heirs: ${z.prettifyError(error)}`)
@@ -96,6 +116,50 @@ export const updateWallet = async (req: Request & { user?: { userId: number } },
     }
     logger.error(`Wallet update failed for user: ${error.message}`);
     return res.status(400).json({ error: error.message });
+  }
+};
+
+export const verifyEmail = async (req: Request, res: Response) => {
+  try {
+    const { email, code } = VerifyEmailSchema.parse(req.body);
+
+    logger.info('verify that user with email exists')
+    const user = await userRepository.findByEmail(email)
+    if (!user) {
+      logger.warn('User not found')
+      return res.status(400).json({message: 'No account associated with email found'})
+    }
+
+    if (user.email_verified) {
+      logger.warn(`Email verification failed: Email verified for ${email}`)
+      return res.status(400).json({ error: 'Email already verified' });
+    }
+
+    logger.info('Retrieve otp information');
+    const record = await otpRepository.findByEmail(email)
+    if (!record) {
+      logger.warn('Otp record not found')
+      return res.status(400).json({message: 'invalid request'})
+    }
+
+    if (code !== record.code) {
+      logger.warn(`Email verification failed: Invalid OTP for user ID ${user.id}`);
+      return res.status(401).json({ error: 'Invalid OTP' });
+    }
+
+    logger.info('update user email status')
+    await userRepository.updateEmailStatus(email)
+
+    logger.info('delete otp record')
+    await otpRepository.delete(email)
+    return res.status(200).json({message: 'Email verified successfully'})
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      logger.warn(`validation failed for creating heirs: ${z.prettifyError(error)}`)
+      return res.status(400).json({error: 'validation failed', details: z.treeifyError(error)})
+    }
+    logger.error(`Email verification failed: ${error}`);
+    res.status(400).json({ error: 'Email verification failed' });
   }
 };
 
@@ -109,7 +173,7 @@ export const refreshToken = async (req: Request, res: Response) => {
       return res.status(401).json({ error: 'Invalid refresh token' });
     }
 
-    const accessToken = jwtService.generateAccessToken(decoded.userId);
+    const accessToken = jwtService.generateAccessToken(decoded.userId, 'user');
     logger.info(`Access token refreshed for user ID ${decoded.userId}`);
     return res.json({ accessToken });
 

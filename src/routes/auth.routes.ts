@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { register, login, updateWallet, refreshToken, getAuthenticatedUser } from '../controllers/auth.controller';
-import { authenticateToken } from '../middlewares/auth.middleware';
+import { register, login, refreshToken, getAuthenticatedUser, verifyEmail, createWallet } from '../controllers/auth.controller';
+import { authenticateToken, restrictToRole } from '../middlewares/auth.middleware';
 
 const router = Router();
 
@@ -49,26 +49,18 @@ router.post('/login', login);
 
 /**
  * @swagger
- * /auth/update-wallet:
+ * /auth/create-wallet:
  *   post:
- *     summary: Update wallet address and secret key
+ *     summary: Create wallet address and secret key
  *     tags: [Auth]
  *     security: [{ bearerAuth: [] }]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               walletAddress: { type: string }
  *     responses:
- *       200: { description: Wallet updated }
+ *       200: { description: Wallet Created }
  *       400: { description: Wallet address already set or invalid request }
  *       401: { description: Unauthorized }
  *       404: { description: User not found }
  */
-router.post('/update-wallet', authenticateToken, updateWallet);
+router.post('/create-wallet', authenticateToken, createWallet);
 
 /**
  * @swagger
@@ -92,6 +84,27 @@ router.post('/refresh', refreshToken);
 
 /**
  * @swagger
+ * /auth/verify-email:
+ *   post:
+ *     summary: Verify email
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email: { type: string }
+ *               code: { type: string }
+ *     responses:
+ *       200: { description: Login successful }
+ *       401: { description: Invalid credentials }
+ */
+router.post('/verify-email', verifyEmail)
+
+/**
+ * @swagger
  * /auth/me:
  *   get:
  *     summary: Fetch authenticated user details
@@ -112,6 +125,6 @@ router.post('/refresh', refreshToken);
  *       404: { description: User not found }
  *       400: { description: Failed to fetch user details }
  */
-router.get('/me', authenticateToken, getAuthenticatedUser);
+router.get('/me', authenticateToken, restrictToRole(['user']), getAuthenticatedUser);
 
 export default router;

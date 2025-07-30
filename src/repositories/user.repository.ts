@@ -8,6 +8,7 @@ interface User {
   email: string;
   password: string;
   secretKey?: string;
+  email_verified: boolean;
   wallet_address?: string;
 }
 
@@ -32,21 +33,24 @@ export class UserRepository {
   async findById(id: number): Promise<User | null> {
     const query = 'SELECT * FROM users WHERE id = $1';
     const result: QueryResult<User> = await pool.query(query, [id]);
-    console.log(result)
     return result.rows[0] || null;
   }
 
-  async updateWalletAddress(userId: number, walletAddress: string): Promise<User> {
+  async updateEmailStatus(email: string) {
+    const query = `
+      UPDATE users SET email_verified = $1
+      WHERE email = $2
+    `
+    await pool.query(query, [true, email])
+  }
+
+  async updateWalletAddress(userId: number, wallet_address: string, wallet_secret: string): Promise<User> {
     const query = `
       UPDATE users
-      SET wallet_address = CASE
-        WHEN wallet_address IS NULL THEN COALESCE($1, wallet_address)
-        ELSE wallet_address
-      END
-      WHERE id = $2
-      RETURNING *;
+      SET wallet_address = $1, wallet_secret = $2
+      WHERE id = $3
     `;
-    const values = [walletAddress, userId];
+    const values = [wallet_address, wallet_secret, userId];
     const result: QueryResult<User> = await pool.query(query, values);
     return result.rows[0];
   }

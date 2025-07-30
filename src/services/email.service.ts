@@ -1,5 +1,6 @@
 import nodemailer from 'nodemailer';
 import { config } from '../config/config';
+import { logger } from '../config/logger';
 
 interface EmailOptions {
   to: string;
@@ -49,5 +50,25 @@ export class EmailService {
       <p>Best regards,<br>The LegaC Team</p>
     `;
     await this.sendEmail({ to, subject, text, html });
+  }
+
+  async sendVerificationEmail(email: string, fullname: string, code: string): Promise<void> {
+    const subject = 'Welcome to LegaC!';
+    const text = `Hello ${fullname},\n\nThank you for registering with LegaC! We're excited to have you on board.\n\nBest regards,\nThe LegaC Team`;
+    const html = `
+      <h1>Welcome to LegaC!</h1>
+      <p>Hello ${fullname},</p>
+      <p>Thank you for registering with LegaC! We're excited to have you on board.</p>
+      <p>Your Verification code to complete registration with us ${code}</p>
+      <p>Best regards,<br>The LegaC Team</p>
+    `;
+
+    try {
+      await this.sendEmail({to: email, subject, text, html});
+      logger.info(`Verification email sent to ${email} for user ID ${fullname}`);
+    } catch (error: any) {
+      logger.error(`Failed to send verification email to ${email}: ${error.message}`);
+      throw error;
+    }
   }
 }

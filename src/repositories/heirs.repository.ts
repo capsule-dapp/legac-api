@@ -21,12 +21,12 @@ export class HeirRepository {
     async create(heir: CreateHeir, user_id: number, wallet_address: string, wallet_secret: string) {
         try {
             const query = `
-            INSERT INTO heirs (user_id, fullname, email, title, age, wallet_address, wallet_secret)
-            VALUES ($1, $2, $3, $4, $5, $6, $7)
+            INSERT INTO heirs (user_id, fullname, email, title, state, country, dob, age, wallet_address, wallet_secret)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
             RETURNING *
         `;
 
-        const values = [user_id, heir.fullname, heir.email, heir.title, heir.age, wallet_address, wallet_secret];
+        const values = [user_id, heir.fullname, heir.email, heir.title, heir.state, heir.country, heir.dob, heir.age, wallet_address, wallet_secret];
         const result: QueryResult<HeirResponse> = await pool.query(query, values);
         return result.rows[0];
         } catch(error) {
@@ -47,7 +47,7 @@ export class HeirRepository {
 
     async findByUser(user_id: number) {
         const query = `
-            SELECT user_id, fullname, email, title, wallet_address FROM heirs
+            SELECT user_id, fullname, email, title, state, country, dob, age, wallet_address FROM heirs
             WHERE user_id = $1
         `;
 
