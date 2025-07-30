@@ -1,8 +1,7 @@
 import { createClient } from 'redis'
 import { config } from './config'
 
-export const client = createClient({ url: `${config.redisHost}:${config.redisPort}` });
-console.log(`${config.redisHost}:${config.redisPort}`)
+export const client = createClient({ url: config.redisUri });
 export async function connect() {
     await client.connect();
 }
