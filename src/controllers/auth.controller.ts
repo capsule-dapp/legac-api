@@ -104,7 +104,7 @@ export const createWallet = async (req: Request & { user?: { userId: number; rol
     await userRepository.updateWalletAddress(
       userId,
       generatedWallet.publicKey,
-      encrypt(generatedWallet.secretKey)
+      generatedWallet.secretKey
     )
 
     logger.info(`Wallet updated for user ID ${userId}`);

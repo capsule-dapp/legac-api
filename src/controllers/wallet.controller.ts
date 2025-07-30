@@ -3,29 +3,49 @@ import { logger } from "../config/logger";
 import { UserRepository } from "../repositories/user.repository";
 import { Cache } from "../config/redis";
 import { WalletService } from "../services/wallet.service";
+import z from "zod";
+import { SendSOLSchema } from "../schemas/wallet.schema";
 
 const userRepository = new UserRepository();
 const walletService = new WalletService();
 const cacheService = new Cache();
 
 export const sendSOL = async (req: Request & { user?: { userId: number } }, res: Response) => {
-     const userId = req.user?.userId;
+    const userId = req.user?.userId;
     if (!userId) {
         logger.warn(`Unauthorized action: cannot create heir`);
         return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    const user = await cacheService.getOrSet(
-        `auth:user${userId}`,
-        await userRepository.findById(userId),
-        30
-    );
-    if (!user) {
-        logger.warn(`user account not forun for: ${userId}`)
-        return res.status(400).json({message: 'User not found'})
+    try {
+        const { amount, destination } = SendSOLSchema.parse(req.body);
+        const user = await cacheService.getOrSet(
+            `auth:user${userId}`,
+            await userRepository.findById(userId),
+            30
+        );
+        if (!user) {
+            logger.warn(`user account not forun for: ${userId}`)
+            return res.status(400).json({message: 'User not found'})
+        }
+
+        const signature = await walletService.sendSOL({sender: user.wallet_address, destination, amount}, user.wallet_secret)
+        if (signature === null) {
+            logger.warn(`could not send funds to ${destination} from ${user.wallet_address}`)
+            return res.status(400).json({message: 'Could not send funds'})
+        }
+
+        logger.info(`funds sent successfully to ${destination} from ${user.wallet_address}`)
+        return res.status(200).json({message: 'funds sent successfully', explorerLink: `explorer.solana.com/tx/${signature}?cluster=devnet`})
+    } catch(error) {
+        if (error instanceof z.ZodError) {
+            logger.warn(`validation failed for sending funds:\n ${z.prettifyError(error)}`)
+            return res.status(400).json({error: 'validation failed', details: z.treeifyError(error)})
+        }
+
+        logger.error(`could not transfer solana: ${error}`);
+        return res.status(400).json({ error: 'Could not transfer funds' });
     }
-
-
 }
 
 export const walletInfo = async (req: Request & { user?: { userId: number } }, res: Response) => {

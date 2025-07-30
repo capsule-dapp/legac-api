@@ -12,6 +12,7 @@ import { connect } from './config/redis';
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import { decrypt, encrypt } from './helpers/crypto';
 
 // load environment variables
 dotenv.config();
