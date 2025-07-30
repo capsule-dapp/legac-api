@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { authenticateToken } from "../middlewares/auth.middleware";
-import { sendSOL, walletInfo } from "../controllers/wallet.controller";
+import { sendSOL, sendSPLToken, walletInfo } from "../controllers/wallet.controller";
 
 const router = Router();
 
@@ -52,5 +52,54 @@ router.get('/info', authenticateToken, walletInfo)
  *       401: { description: Unauthorized access }
  */
 router.post('/transfer', authenticateToken, sendSOL)
+
+/**
+ * @swagger
+ * /wallets/transfer-nft:
+ *   post:
+ *     summary: Transfer NFT
+ *     tags: [Wallets]
+ *     security: [{ bearerAuth: [] }]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               destination: { type: string }
+ *               mint: { type: string }
+ *     responses:
+ *       200: { description: Funds transferred successfully }
+ *       400: { description: Could not store record at the moment }
+ *       404: { description: User not found }
+ *       401: { description: Unauthorized access }
+ */
+router.post('/transfer-nft', authenticateToken, sendSOL)
+
+/**
+ * @swagger
+ * /wallets/transfer-spl:
+ *   post:
+ *     summary: Transfer SPL tokens
+ *     tags: [Wallets]
+ *     security: [{ bearerAuth: [] }]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               destination: { type: string }
+ *               amount: { type: integer }
+ *               mint: { type: string }
+ *     responses:
+ *       200: { description: Funds transferred successfully }
+ *       400: { description: Could not store record at the moment }
+ *       404: { description: User not found }
+ *       401: { description: Unauthorized access }
+ */
+router.post('/transfer-spl', authenticateToken, sendSPLToken)
 
 export default router;

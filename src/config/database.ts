@@ -19,6 +19,7 @@ export const initDb = async () => {
         pin INTEGER,
         wallet_address TEXT,
         wallet_secret TEXT,
+        security_pin TEXT,
         email_verified BOOLEAN NOT NULL DEFAULT false,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

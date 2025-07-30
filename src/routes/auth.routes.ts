@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { register, login, refreshToken, getAuthenticatedUser, verifyEmail, createWallet } from '../controllers/auth.controller';
+import { register, login, refreshToken, getAuthenticatedUser, verifyEmail, createWallet, setPin } from '../controllers/auth.controller';
 import { authenticateToken, restrictToRole } from '../middlewares/auth.middleware';
 
 const router = Router();
@@ -61,6 +61,29 @@ router.post('/login', login);
  *       404: { description: User not found }
  */
 router.post('/create-wallet', authenticateToken, createWallet);
+
+/**
+ * @swagger
+ * /auth/set-pin:
+ *   post:
+ *     summary: Set security pin
+ *     tags: [Auth]
+ *     security: [{ bearerAuth: [] }]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               pin: { type: string }
+ *     responses:
+ *       200: { description: Security pin saved }
+ *       400: { description: Security pin set or invalid request }
+ *       401: { description: Unauthorized }
+ *       404: { description: User not found }
+ */
+router.post('/set-pin', authenticateToken, setPin);
 
 /**
  * @swagger

@@ -7,7 +7,7 @@ interface User {
   fullname: string;
   email: string;
   password: string;
-  secretKey?: string;
+  security_pin?: string;
   email_verified: boolean;
   wallet_address?: string;
 }
@@ -51,6 +51,17 @@ export class UserRepository {
       WHERE id = $3
     `;
     const values = [wallet_address, wallet_secret, userId];
+    const result: QueryResult<User> = await pool.query(query, values);
+    return result.rows[0];
+  }
+
+  async updateSecurityPin(userId: number, security_pin: string): Promise<User> {
+    const query = `
+      UPDATE users
+      SET security_pin = $1
+      WHERE id = $2
+    `;
+    const values = [security_pin, userId];
     const result: QueryResult<User> = await pool.query(query, values);
     return result.rows[0];
   }

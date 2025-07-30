@@ -11,11 +11,11 @@ import { z } from 'zod'
 import {
   LoginSchema,
   RegisterSchema,
+  SetPinSchema,
   VerifyEmailSchema
 } from '../schemas/auth.schema';
 import { OtpRepository } from '../repositories/otp.repository';
 import { WalletService } from '../services/wallet.service';
-import { encrypt } from '../helpers/crypto';
 
 const userRepository = new UserRepository();
 const walletService = new WalletService();
@@ -118,6 +118,42 @@ export const createWallet = async (req: Request & { user?: { userId: number; rol
     return res.status(400).json({ error: error.message });
   }
 };
+
+export const setPin = async (req: Request & { user?: { userId: number; role: string } }, res: Response) => {
+  try {
+    const { pin } = SetPinSchema.parse(req.body)
+
+    const userId = req.user?.userId;
+    if (!userId) {
+      logger.warn(`Unauthorized wallet update attempt`);
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const user = await userRepository.findById(userId)
+    if (!user) {
+      logger.warn('User not found')
+      return res.status(400).json({message: 'No account associated with email found'})
+    }
+
+    if (user.security_pin == "" || user.security_pin != null) {
+      logger.warn('security pin already set')
+      return res.status(400).json({message: 'Security pin already set'})
+    }
+
+    logger.info('hash security pin and save in database')
+    const hashedSecurityPin = await bcrypt.hash(pin, 10)
+    await userRepository.updateSecurityPin(userId, hashedSecurityPin)
+
+    return res.status(200).json({message: 'Security pin successfully set for account'})
+  } catch(error: any) {
+    if (error instanceof z.ZodError) {
+      logger.warn(`validation failed for setting pin: ${z.prettifyError(error)}`)
+      return res.status(400).json({error: 'validation failed', details: z.treeifyError(error)})
+    }
+    logger.error(`Pin update failed for user: ${error.message}`);
+    return res.status(400).json({ error: error.message });
+  }
+}
 
 export const verifyEmail = async (req: Request, res: Response) => {
   try {

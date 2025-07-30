@@ -20,6 +20,10 @@ export const LoginSchema = z.object({
         )
 });
 
+export const SetPinSchema = z.object({
+    pin: z.string().length(6, {message: 'Security pin must be 6 digits'}).regex(/^\d+$/, { message: 'Verification code must be numeric' })
+})
+
 export const VerifyEmailSchema = z.object({
     email: z.email({ message: 'email address is invalid' }),
     code: z.string().length(6, { message: 'Verification code must be 6 digits' }).regex(/^\d+$/, { message: 'Verification code must be numeric' }),
