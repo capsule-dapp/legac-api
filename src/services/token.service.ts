@@ -4,6 +4,7 @@ import { getAssociatedTokenAddressSync } from "@solana/spl-token";
 import { publicKey } from "@metaplex-foundation/umi";
 import { connection } from "../config/config";
 import { PublicKey } from '@solana/web3.js';
+import { BirdeyeService } from './birdeye.service';
 
 export interface TokenAsset {
     mint: string;
@@ -22,6 +23,8 @@ export interface NFTAsset {
     edition?: string | null;
     collection?: string | null;
 }
+
+const birdeyeService = new BirdeyeService();
 
 export class TokenService {
     private umi;
@@ -79,5 +82,13 @@ export class TokenService {
                 } as NFTAsset;
             })
         );
+    }
+
+    async getTokenPrice(mint: string): Promise<any> {
+        const response = await birdeyeService.getTokenPrice(mint).catch(error => {
+            throw new Error(`Failed to fetch token price: ${error.message}`);
+        });
+        console.log(`Token price for ${mint}:`, response);
+        return response;
     }
 }

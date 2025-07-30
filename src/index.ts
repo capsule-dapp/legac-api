@@ -11,7 +11,6 @@ import { connect } from './config/redis';
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import { TokenService } from './services/token.service';
 
 // load environment variables
 dotenv.config();
@@ -29,13 +28,6 @@ app.use(
     swaggerUi.serve,
     swaggerUi.setup(swaggerSpec)
 );
-
-// const tokensrv = new TokenService();
-// tokensrv.getWalletNFTs("8Gwdguqu9B96eSGFWJbz49PRuKRT5nZNLBDttm4mDQrh").then(tokens => {
-//     console.log(tokens);
-// }).catch(error => {
-//     console.error(`Error fetching NFTs: ${error.message}`);
-// });
 
 // Routes
 app.use('/auth', authRoutes);

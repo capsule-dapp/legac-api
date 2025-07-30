@@ -13,3 +13,16 @@ export const WalletAddressSchema = z.object({
         }
     }, {message: 'wallet address is invalid'})
 })
+
+export const MintAddressSchema = z.object({
+    mint: z.string()
+        .min(1, {message: "mint address is required"})
+        .refine(mint => {
+        try {
+            return validatePublicKey(mint)
+        } catch {
+            console.error(`Invalid mint address: ${mint}`);
+            return false;
+        }
+    }, {message: 'mint address is invalid'})
+})

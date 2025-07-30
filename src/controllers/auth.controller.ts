@@ -102,7 +102,7 @@ export const updateWallet = async (req: Request & { user?: { userId: number } },
 export const refreshToken = async (req: Request, res: Response) => {
   try {
     const { refreshToken } = req.body;
-    const decoded = jwt.verify(refreshToken, config.jwtRefreshSecret) as { userId: number };
+    const decoded = jwt.verify(refreshToken, config.jwtSecret) as { userId: number };
     const isValid = await jwtService.validateRefreshToken(refreshToken);
     if (!isValid) {
       logger.warn(`Invalid refresh token for user ID ${decoded.userId}`);

@@ -13,12 +13,12 @@ export class JwtService {
   }
 
   generateRefreshToken(userId: number): string {
-    return jwt.sign({ userId }, config.jwtRefreshSecret, { expiresIn: '7d' });
+    return jwt.sign({ userId }, config.jwtSecret, { expiresIn: '7d' });
   }
 
   async validateRefreshToken(refreshToken: string): Promise<boolean> {
     try {
-      jwt.verify(refreshToken, config.jwtRefreshSecret);
+      jwt.verify(refreshToken, config.jwtSecret);
       return true;
     } catch (error) {
       return false;

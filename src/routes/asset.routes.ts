@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { nfts, tokens } from "../controllers/assets.controller";
+import { nfts, tokenPrice, tokens } from "../controllers/assets.controller";
 
 const router = Router();
 
@@ -59,10 +59,33 @@ router.get('/:address/tokens', tokens)
 *                   name: { type: string }
 *                   uri: { type: string }
 *                   balance: { type: string }
-*       401: { description: Unauthorized access }
 */
 router.get('/:address/nfts', nfts)
 
-// router.get('/:mint/price', tokenPrice)
+/**
+* @swagger
+* /assets/{mint}/price:
+*   get:
+*     summary: Get token price
+*     tags: [Assets]
+*     parameters:
+*       - in: path
+*         name: mint
+*         schema:
+*           type: string
+*         required: true
+*     responses:
+*       200:
+*          description: Get token price
+*          content:
+*             application/json:
+*               schema:
+*                 type: object
+*                 properties:
+*                   priceInUSDChange24h: { type: number }
+*                   priceInNative: { type: number }
+*                   priceInUSD: { type: number }
+*/
+router.get('/:mint/price', tokenPrice)
 
 export default router;
