@@ -1,5 +1,11 @@
 import { config } from "../config/config";
 
+export interface BirdeyeTokenPrice {
+    priceInUSDChange24h: number;
+    priceInNative: number;
+    priceInUSD: number;
+}
+
 export class BirdeyeService {
     private baseUrl: string;
     private headers: object;
@@ -17,7 +23,7 @@ export class BirdeyeService {
         };
     }
 
-    async getTokenPrice(mint: string): Promise<any> {
+    async getTokenPrice(mint: string): Promise<BirdeyeTokenPrice> {
         if (!mint) {
             throw new Error('Mint address is required');
         }
@@ -32,6 +38,6 @@ export class BirdeyeService {
             priceInUSDChange24h: data.data.priceChange24h,
             priceInNative: data.data.priceInNative,
             priceInUSD: data.data.value,
-        };
+        } as BirdeyeTokenPrice;
     }
 }

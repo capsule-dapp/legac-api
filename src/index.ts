@@ -2,6 +2,7 @@ import assetRoutes from './routes/asset.routes';
 import capsuleRoutes from './routes/capsule.routes';
 import { swaggerSpec } from './swagger/swagger';
 import authRoutes from './routes/auth.routes';
+import walletRoutes from './routes/wallet.routes'
 import heirRoutes from './routes/heirs.routes';
 import { initDb } from './config/database';
 import swaggerUi from 'swagger-ui-express';
@@ -33,6 +34,7 @@ app.use(
 app.use('/auth', authRoutes);
 app.use('/heirs', heirRoutes);
 app.use('/assets', assetRoutes);
+app.use('/wallets', walletRoutes);
 app.use('/capsules', capsuleRoutes);
 
 connect()
