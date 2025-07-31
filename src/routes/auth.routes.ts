@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { register, login, refreshToken, getAuthenticatedUser, verifyEmail, createWallet, setPin } from '../controllers/auth.controller';
+import { register, login, refreshToken, getAuthenticatedUser, verifyEmail, createWallet, setPin, heirLogin } from '../controllers/auth.controller';
 import { authenticateToken, restrictToRole } from '../middlewares/auth.middleware';
 
 const router = Router();
@@ -46,6 +46,27 @@ router.post('/register', register);
  *       401: { description: Invalid credentials }
  */
 router.post('/login', login);
+
+/**
+ * @swagger
+ * /auth/heir-login:
+ *   post:
+ *     summary: Login heir
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email: { type: string }
+ *               password: { type: string }
+ *     responses:
+ *       200: { description: Login successful }
+ *       401: { description: Invalid credentials }
+ */
+router.post('/heir-login', heirLogin);
 
 /**
  * @swagger

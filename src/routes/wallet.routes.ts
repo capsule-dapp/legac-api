@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { authenticateToken } from "../middlewares/auth.middleware";
-import { sendSOL, sendSPLToken, walletInfo } from "../controllers/wallet.controller";
+import { sendNFT, sendSOL, sendSPLToken, walletInfo } from "../controllers/wallet.controller";
 
 const router = Router();
 
@@ -75,7 +75,7 @@ router.post('/transfer', authenticateToken, sendSOL)
  *       404: { description: User not found }
  *       401: { description: Unauthorized access }
  */
-router.post('/transfer-nft', authenticateToken, sendSOL)
+router.post('/transfer-nft', authenticateToken, sendNFT)
 
 /**
  * @swagger

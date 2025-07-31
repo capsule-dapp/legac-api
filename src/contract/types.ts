@@ -104,7 +104,8 @@ export type Legac = {
               },
               {
                 "kind": "account",
-                "path": "signer"
+                "path": "capsule_account.owner",
+                "account": "capsule"
               },
               {
                 "kind": "arg",
@@ -693,10 +694,8 @@ export type Legac = {
                   108,
                   101,
                   95,
-                  97,
-                  115,
-                  115,
-                  101,
+                  110,
+                  102,
                   116,
                   95,
                   118,
@@ -1425,6 +1424,56 @@ export type Legac = {
           "type": "string"
         }
       ]
+    },
+    {
+      "name": "getLockStatus",
+      "discriminator": [
+        169,
+        253,
+        229,
+        1,
+        109,
+        105,
+        245,
+        160
+      ],
+      "accounts": [
+        {
+          "name": "capsuleAccount",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  97,
+                  112,
+                  115,
+                  117,
+                  108,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "capsule_account.owner",
+                "account": "capsule"
+              },
+              {
+                "kind": "arg",
+                "path": "capsuleId"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "capsuleId",
+          "type": "string"
+        }
+      ],
+      "returns": "bool"
     },
     {
       "name": "initializeConfig",

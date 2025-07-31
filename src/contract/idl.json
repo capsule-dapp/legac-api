@@ -98,7 +98,8 @@
               },
               {
                 "kind": "account",
-                "path": "signer"
+                "path": "capsule_account.owner",
+                "account": "Capsule"
               },
               {
                 "kind": "arg",
@@ -687,10 +688,8 @@
                   108,
                   101,
                   95,
-                  97,
-                  115,
-                  115,
-                  101,
+                  110,
+                  102,
                   116,
                   95,
                   118,
@@ -1419,6 +1418,56 @@
           "type": "string"
         }
       ]
+    },
+    {
+      "name": "get_lock_status",
+      "discriminator": [
+        169,
+        253,
+        229,
+        1,
+        109,
+        105,
+        245,
+        160
+      ],
+      "accounts": [
+        {
+          "name": "capsule_account",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  97,
+                  112,
+                  115,
+                  117,
+                  108,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "capsule_account.owner",
+                "account": "Capsule"
+              },
+              {
+                "kind": "arg",
+                "path": "capsule_id"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "capsule_id",
+          "type": "string"
+        }
+      ],
+      "returns": "bool"
     },
     {
       "name": "initialize_config",

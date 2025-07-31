@@ -55,4 +55,25 @@ export class HeirRepository {
         const result: QueryResult<HeirResponse> = await pool.query(query, values);
         return result.rows[0];
     }
+
+    async findByEmail(email: string) {
+        const query = `
+            SELECT * FROM heirs
+            WHERE email = $1 AND password_expiry > CURRENT_TIMESTAMP
+        `;
+
+        const values = [email];
+        const result: QueryResult = await pool.query(query, values);
+        return result.rows[0];
+    }
+
+    async updateUniquePassword(heirID: number, password: string) {
+        const query = `
+            UPDATE heirs SET temporary_password = $1, password_expiry = $2
+            WHERE id = $3;
+        `;
+
+        const expiry = new Date(Date.now() + 60 * 60 * 2 * 1000)
+        await pool.query(query, [password, expiry, heirID])
+    }
 }

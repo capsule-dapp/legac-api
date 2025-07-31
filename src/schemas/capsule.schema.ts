@@ -1,3 +1,4 @@
+import { getMint } from '@solana/spl-token';
 import { validatePublicKey } from '../helpers/utils'
 import { z } from 'zod'
 
@@ -19,6 +20,7 @@ export const CreateCapsuleSchema = z.object({
     heir_id: z.coerce.number({message: 'Provide a valid heir ID'}),
     asset_mint: z.string().refine(address => {
         try {
+          // getMint()
             return validatePublicKey(address)
         } catch(error) {
             false
@@ -95,5 +97,17 @@ export const CreateCapsuleSchema = z.object({
       }
     }
 });
+
+export const CapsuleAddressSchema = z.object({
+  capsule_address: z.string()
+  .min(1, { message: 'Capsule address is required'})
+  .refine(address => {
+      try {
+          return !validatePublicKey(address)
+      } catch(error) {
+          false
+      }
+  })
+})
 
 export type CreateCapsuleType = z.infer<typeof CreateCapsuleSchema>

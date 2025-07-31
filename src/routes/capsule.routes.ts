@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { index, store } from "../controllers/capsule.controller";
+import { getCapsule, index, securityQuestions, store } from "../controllers/capsule.controller";
 import { authenticateToken, restrictToRole } from "../middlewares/auth.middleware";
 
 const router = Router();
@@ -24,16 +24,14 @@ const router = Router();
 *                   capsule_unique_id: { type: string }
 *                   capsule_address: { type: string }
 *                   heir_id: { type: number }
-*                   unlock_type: { type: string }
-*                   unlock_timestamp: { type: string }
-*                   inactivity_period: { type: number }
-*                   document_uri: { type: string }
-*                   message: { type: string }
-*                   asset_mint: { type: string }
-*                   amount: { type: number }
 *       401: { description: Unauthorized access }
 */
-router.get('/', authenticateToken, restrictToRole(['user']), index)
+router.get(
+    '/',
+    authenticateToken,
+    restrictToRole(['user']),
+    index
+)
 
 /**
  * @swagger
@@ -209,6 +207,90 @@ router.get('/', authenticateToken, restrictToRole(['user']), index)
  *                   type: string
  *                   description: Error message.
  */
-router.post('/', authenticateToken, restrictToRole(['user']), store)
+router.post(
+    '/',
+    authenticateToken,
+    restrictToRole(['user']),
+    store
+)
+
+/**
+* @swagger
+* /capsules/{capsule_address}:
+*   get:
+*     summary: Retrieve a capsule
+*     tags: [Capsules]
+*     security: [{ bearerAuth: [] }]
+*     parameters:
+*       - in: path
+*         name: capsule_address
+*         schema:
+*           type: string
+*         required: true
+*     responses:
+*       200:
+*          description: Retrieve a capsule
+*          content:
+*             application/json:
+*               schema:
+*                 type: object
+*                 properties:
+*                   id: { type: number }
+*                   capsule_type: { type: string }
+*                   capsule_unique_id: { type: string }
+*                   capsule_address: { type: string }
+*                   heir_id: { type: number }
+*       401: { description: Unauthorized access }
+*       404: { description: Capsule not found }
+*/
+router.get(
+    '/:capsule_address',
+    authenticateToken,
+    restrictToRole(['user', 'role']),
+    getCapsule
+)
+
+/**
+* @swagger
+* '/capsules/{capsule_address}/security-questions':
+*   get:
+*     summary: Get capsule security questions
+*     tags: [Capsules]
+*     security: [{ bearerAuth: [] }]
+*     parameters:
+*       - in: path
+*         name: capsule_address
+*         schema:
+*           type: string
+*         required: true
+*     responses:
+*       200:
+*          description: Get capsule security questions
+*          content:
+*             application/json:
+*               schema:
+*                 type: object
+*                 properties:
+*                   security_questions:
+*                       type: array
+*                       description: Array of security questions and answers.
+*                       items:
+*                           type: object
+*                           properties:
+*                               question:
+*                                   type: string
+*                                   description: The security question.
+*                               answer:
+*                                   type: string
+*                                   description: The answer to the security question.
+*       401: { description: Unauthorized access }
+*       400: { description: Capsule Not found }
+*/
+router.get(
+    '/:capsule_address/security-questions',
+    authenticateToken,
+    restrictToRole(['user', 'role']),
+    securityQuestions
+)
 
 export default router;

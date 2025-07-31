@@ -71,4 +71,25 @@ export class EmailService {
       throw error;
     }
   }
+
+  async sendCapsuleClaimEmail(email: string, fullname: string, password: string): Promise<void> {
+    const subject = 'Notification For Asset Claim!';
+    const text = `Hello ${fullname},\n\nYou are receiving this mail to retrieve an asset locked by your parent or kin stored with us.\n\n`;
+    const html = `
+      <h1>Welcome to LegaC!</h1>
+      <p>Hello ${fullname},</p>
+      <p>Use the following credentials to claim your asset on LegaC Mobile App.</p>
+      <p>Email: ${email}</p>
+      <p>Password: ${password}</p>
+      <p>Best regards,<br>The LegaC Team</p>
+    `;
+
+    try {
+      await this.sendEmail({to: email, subject, text, html});
+      logger.info(`Capsule Retrieval email sent to ${email}`);
+    } catch (error: any) {
+      logger.error(`Failed to send verification email to ${email}: ${error.message}`);
+      throw error;
+    }
+  }
 }

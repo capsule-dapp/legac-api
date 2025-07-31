@@ -56,6 +56,7 @@ export const initDb = async () => {
         capsule_type VARCHAR(255),
         capsule_unique_id VARCHAR(255) NOT NULL,
         capsule_address TEXT NOT NULL,
+        status VARCHAR(50) CHECK (status IN ('locked', 'pending', 'claimed')) DEFAULT 'locked',
         heir_id INTEGER NOT NULL REFERENCES heirs(id) ON DELETE RESTRICT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

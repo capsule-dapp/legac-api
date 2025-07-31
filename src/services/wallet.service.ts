@@ -1,7 +1,7 @@
 import { decrypt, encrypt } from '../helpers/crypto';
 import { Connection, Keypair, LAMPORTS_PER_SOL, PublicKey, sendAndConfirmTransaction, SystemProgram, Transaction } from '@solana/web3.js'
 import { BirdeyeService } from './birdeye.service';
-import { createAssociatedTokenAccount, createAssociatedTokenAccountInstruction, createTransferInstruction, getAssociatedTokenAddress, getMint, getOrCreateAssociatedTokenAccount, NATIVE_MINT } from '@solana/spl-token';
+import { createAssociatedTokenAccountInstruction, createTransferInstruction, getAssociatedTokenAddress, getMint, NATIVE_MINT } from '@solana/spl-token';
 import { connection } from '../config/config';
 import { logger } from '../config/logger';
 import bs58 from 'bs58'
@@ -124,6 +124,8 @@ export class WalletService {
                 logger.info('get sender and destination token account info')
                 const senderTokenAccount = await getAssociatedTokenAddress(mint, sender);
                 const recipientTokenAccount = await getAssociatedTokenAddress(mint, recipient);
+
+                console.log(senderTokenAccount)
 
                 const transaction = new Transaction();
 
