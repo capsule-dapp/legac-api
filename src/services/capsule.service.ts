@@ -194,7 +194,6 @@ export class CapsuleService  {
 
             const transaction = new Transaction();
 
-            // Add small SOL transfer (optional, for testing)
             transaction.add(
                 SystemProgram.transfer({
                     fromPubkey: owner,
@@ -283,7 +282,7 @@ export class CapsuleService  {
 
             const transaction = new Transaction();
 
-            // Add small SOL transfer (optional, for testing)
+
             transaction.add(
                 SystemProgram.transfer({
                     fromPubkey: owner,
@@ -310,11 +309,13 @@ export class CapsuleService  {
 
             logger.info('get owner token account')
             const owner_token_account = await getAssociatedTokenAddress(asset_mint, owner);
+            const owner_token_balance = await this.connection.getTokenAccountBalance(owner_token_account);
+            if (owner_token_balance.value.uiAmount == null || owner_token_balance.value.uiAmount < 1)
+                throw new Error("Insufficient balance")
 
             // Create capsule instruction
             logger.info('Calling nft capsule instruction');
             const capsuleID = await this.capsule.generate_capsule_id();
-            console.log(capsuleID)
             const create_capsule_instruction = await this.capsule.create_nft_capsule_instruction(
                 owner,
                 owner_token_account,

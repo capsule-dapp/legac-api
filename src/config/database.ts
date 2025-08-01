@@ -16,7 +16,6 @@ export const initDb = async () => {
         fullname VARCHAR(255) NOT NULL,
         email VARCHAR(255) UNIQUE NOT NULL,
         password TEXT NOT NULL,
-        pin INTEGER,
         wallet_address TEXT,
         wallet_secret TEXT,
         security_pin TEXT,
@@ -54,10 +53,11 @@ export const initDb = async () => {
       CREATE TABLE IF NOT EXISTS capsules (
         id SERIAL PRIMARY KEY,
         capsule_type VARCHAR(255),
-        capsule_unique_id VARCHAR(255) NOT NULL,
+        capsule_unique_id VARCHAR(255) NOT NULL UNIQUE,
         capsule_address TEXT NOT NULL,
         status VARCHAR(50) CHECK (status IN ('locked', 'pending', 'claimed')) DEFAULT 'locked',
         heir_id INTEGER NOT NULL REFERENCES heirs(id) ON DELETE RESTRICT,
+        security_question_verified BOOLEAN DEFAULT false,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );

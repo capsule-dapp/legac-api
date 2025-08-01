@@ -293,4 +293,11 @@ router.get(
     securityQuestions
 )
 
+router.get(
+    '/:capsule_address/verify-security-questions',
+    authenticateToken,
+    restrictToRole(['user', 'role']),
+    verifySecurityQuestions
+)
+
 export default router;

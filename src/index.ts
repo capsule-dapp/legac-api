@@ -50,14 +50,14 @@ app.use('/capsules', capsuleRoutes);
 // spl-token transfer {mint} {amount} {recipient} --fund-recipient
 
 // NFT
-// spl-token mint 3R4Vz87DiurPyHwS9UYjiA46tiEz7cdcFCzx9Zy36h1h 1 6Dnd9UJQj6VqXvgkssR2cFd7pcHr5hmp5rcg1vnVbgd2
-// spl-token transfer 3R4Vz87DiurPyHwS9UYjiA46tiEz7cdcFCzx9Zy36h1h 1 Gmxxv2WFabZuGUC5XZUPPyBbRr9qcNvciWVGscaDPh5C --fund-recipient
+// spl-token mint r8sYkgTustBp2kAoDHrsUbanVi4DVV38BSWSGzmcztF 1 DQAZ66d36HXDQpC1bxo28HJV3xxsaNr15AcMpW9HibtS
+// spl-token transfer r8sYkgTustBp2kAoDHrsUbanVi4DVV38BSWSGzmcztF 1 Gmxxv2WFabZuGUC5XZUPPyBbRr9qcNvciWVGscaDPh5C --fund-recipient
 
-// spl-token mint F1TkNXiW83QaP3PzciEWLuAArWjghmiWQpLdH9QLFLVd 60000000 89GQzXGQDhiEfxuy1DL1n8cQ4iQMkekKhBSiXEnbDn4L
+// spl-token mint F1TkNXiW83QaP3PzciEWLuAArWjghmiWQpLdH9QLFLVd 60000000 DQAZ66d36HXDQpC1bxo28HJV3xxsaNr15AcMpW9HibtS
 // spl-token transfer F1TkNXiW83QaP3PzciEWLuAArWjghmiWQpLdH9QLFLVd 100000 Gmxxv2WFabZuGUC5XZUPPyBbRr9qcNvciWVGscaDPh5C --fund-recipient
 
-// spl-token mint E493htDD3KuJdDCgYyU85yop6QUAQTFeQAxECWdA2SDJ 10000000 CrGfr83LiowJJU8Xesf5dBpzYzGesAdgaP9ESYWekroR
-// spl-token transfer E493htDD3KuJdDCgYyU85yop6QUAQTFeQAxECWdA2SDJ 500 Gmxxv2WFabZuGUC5XZUPPyBbRr9qcNvciWVGscaDPh5C --fund-recipient
+// spl-token mint 7MoPxTt1sMGZRTC9mv69ZABjbB6cAmsGSYkuv7UPCLXL 10000000 FoPyRnruujZrpPqM41AkU9fHpf6aM53xGStinFxeTwAf
+// spl-token transfer 7MoPxTt1sMGZRTC9mv69ZABjbB6cAmsGSYkuv7UPCLXL 5000 Gmxxv2WFabZuGUC5XZUPPyBbRr9qcNvciWVGscaDPh5C --fund-recipient
 // register jobs
 capsuleLockScheduler()
 

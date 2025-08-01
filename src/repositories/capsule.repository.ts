@@ -27,7 +27,7 @@ export class CapsuleRepository {
 
     async findSecurityQuestions(capsule_id: number) {
         const query = `
-            SELECT question, answer FROM capsule_security_questions
+            SELECT id, question FROM capsule_security_questions
             WHERE capsule_id = $1
         `;
 
@@ -59,7 +59,7 @@ export class CapsuleRepository {
             `
             await pool.query(
                 securityQuestionQuery,
-                [capsuleID, security_question.question, security_question.answer]
+                [capsuleID, security_question.question.toLowerCase(), security_question.answer.trim().toLowerCase()]
             )
         }
     }

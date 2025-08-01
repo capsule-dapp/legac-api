@@ -79,11 +79,6 @@ export const store = async (req: Request & { user?: { userId: number } }, res: R
         }
 
         if (payload.capsule_type == 'native') {
-            if (!payload.asset_mint) {
-                logger.warn('Asset mint is required for cryptocurrency capsule');
-                return res.status(400).json({message: 'Asset mint is required for cryptocurrency capsule'})
-            }
-
             if (payload.amount == undefined || payload.amount <= 0) {
                 logger.warn('Amount must be greater than zero');
                 return res.status(400).json({message: 'Amount must be greater than zero'})
@@ -102,8 +97,8 @@ export const store = async (req: Request & { user?: { userId: number } }, res: R
 
         if (payload.capsule_type == 'nft') {
             if (!payload.asset_mint) {
-                logger.warn('Asset mint is required for cryptocurrency capsule');
-                return res.status(400).json({message: 'Asset mint is required for cryptocurrency capsule'})
+                logger.warn('Asset mint is required for nft capsule');
+                return res.status(400).json({message: 'Asset mint is required for nft capsule'})
             }
 
             logger.info('creating nft capsule')
