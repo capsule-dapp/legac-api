@@ -119,6 +119,31 @@ export class Capsule {
         return ix;
     }
 
+    async create_sol_capsule_instruction(
+        owner: PublicKey,
+        capsuleID: string,
+        amount: number,
+        unlock_type: any,
+        unlock_timestamp: BN | null,
+        inactivity_period: BN | null,
+        beneficiary: PublicKey,
+    ) {
+        const ix = await this.program().methods.createSolCryptoCapsule(
+            capsuleID,
+            unlock_type,
+            unlock_timestamp,
+            inactivity_period,
+            beneficiary,
+            amount,
+            false
+        ).accountsPartial({
+            signer: owner,
+            configAccount: this.get_config_pda(),
+            systemProgram: SystemProgram.programId
+        }).instruction()
+        return ix;
+    }
+
     async create_nft_capsule_instruction(
         owner: PublicKey,
         owner_token_account: PublicKey,
@@ -140,7 +165,7 @@ export class Capsule {
             signer: owner,
             configAccount: this.get_config_pda(),
             assetNftMint: asset_mint,
-            assetNftVault: this.get_capsule_token_vault_pda(asset_mint, capsuleID),
+            assetNftVault: this.get_capsule_nft_vault_pda(asset_mint, capsuleID),
             userAssetNftAccount: owner_token_account,
             tokenProgram: TOKEN_PROGRAM_ID,
             systemProgram: SystemProgram.programId

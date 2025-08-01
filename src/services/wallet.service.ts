@@ -125,8 +125,6 @@ export class WalletService {
                 const senderTokenAccount = await getAssociatedTokenAddress(mint, sender);
                 const recipientTokenAccount = await getAssociatedTokenAddress(mint, recipient);
 
-                console.log(senderTokenAccount)
-
                 const transaction = new Transaction();
 
                 logger.info('check if account info is found else create one')

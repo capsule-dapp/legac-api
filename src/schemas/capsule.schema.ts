@@ -7,20 +7,9 @@ export const CreateCapsuleSchema = z.object({
         ['nft', 'cryptocurrency', 'native', 'document', 'message'],
         { message: 'Capsule Type must be one of: nft, cryptocurrency, native, document, message' }
     ),
-    capsule_unique_id: z.string().min(1, {message: 'Capsule unique id is required'}),
-    capsule_address: z.string()
-        .min(1, { message: 'Capsule address is required'})
-        .refine(address => {
-            try {
-                return !validatePublicKey(address)
-            } catch(error) {
-                false
-            }
-        }),
     heir_id: z.coerce.number({message: 'Provide a valid heir ID'}),
     asset_mint: z.string().refine(address => {
         try {
-          // getMint()
             return validatePublicKey(address)
         } catch(error) {
             false
@@ -28,7 +17,7 @@ export const CreateCapsuleSchema = z.object({
     }).optional(),
     document_uri: z.url().min(1, {message: 'Provide uploaded document uri'}).optional(),
     message: z.string().min(30, {message: 'Message length expected to be longer than this'}).optional(),
-    amount: z.coerce.number().min(0.005, {message: 'amount must be greater than zero'}),
+    amount: z.coerce.number().min(0.005, {message: 'amount must be greater than zero'}).optional(),
     unlock_type: z.enum(['time_based', 'inactivity_based'], {message: 'Unlock type must be one of: time_based, inactivity_based'}),
     unlock_timestamp: z
       .coerce.date()
@@ -109,5 +98,3 @@ export const CapsuleAddressSchema = z.object({
       }
   })
 })
-
-export type CreateCapsuleType = z.infer<typeof CreateCapsuleSchema>

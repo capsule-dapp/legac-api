@@ -44,13 +44,6 @@ app.use('/assets', assetRoutes);
 app.use('/wallets', walletRoutes);
 app.use('/capsules', capsuleRoutes);
 
-(async () => {
-  const accounts = await connection.getTokenAccountsByOwner(new PublicKey("Gmxxv2WFabZuGUC5XZUPPyBbRr9qcNvciWVGscaDPh5C"), { programId: TOKEN_PROGRAM_ID })
-  console.log(await connection.getTokenLargestAccounts(new PublicKey("E493htDD3KuJdDCgYyU85yop6QUAQTFeQAxECWdA2SDJ")))
-  console.log(await connection.getTokenSupply(new PublicKey("E493htDD3KuJdDCgYyU85yop6QUAQTFeQAxECWdA2SDJ")))
-  console.log(accounts)
-})()
-
 // spl-token create-token --decimals 9
 // spl-token create-account {mint}
 // spl-token mint {mint} 10000000 {account}

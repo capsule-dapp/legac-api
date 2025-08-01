@@ -1,6 +1,17 @@
-import { QueryResult } from "pg";
 import { pool } from "../config/database";
-import { CreateCapsuleType } from "../schemas/capsule.schema";
+
+export type SecurityQuestion = {
+    question: string;
+    answer: string;
+}
+
+export type CapsulePayload = {
+    heir_id: number;
+    capsule_type: string;
+    capsule_address: string;
+    capsule_unique_id: string;
+    security_questions: SecurityQuestion[]
+}
 
 export class CapsuleRepository {
     async findAll(userID: number) {
@@ -24,7 +35,7 @@ export class CapsuleRepository {
         return result.rows
     }
 
-    async create(userID: number, capsule: CreateCapsuleType) {
+    async create(userID: number, capsule: CapsulePayload) {
         const createCapsuleQuery = `
             INSERT INTO capsules (capsule_type, capsule_unique_id, capsule_address, heir_id)
             VALUES($1, $2, $3, $4)

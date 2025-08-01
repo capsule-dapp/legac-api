@@ -46,13 +46,6 @@ export const store = async (req: Request & { user?: { userId: number } }, res: R
             50
         );
 
-        const capsule = await cacheService.getOrSet(
-            `capsule:${userId}_${payload.capsule_address}`,
-            await capsuleRepository.findByUniqueIdAndAddress(payload.capsule_address, payload.capsule_unique_id),
-            30
-        )
-        if (capsule) return res.status(400).json({message: 'capsule record already exists'})
-
         const heir = await cacheService.getOrSet(
             `heir_capsule:${userId}`,
             await heirRepository.find(payload.heir_id, userId),
@@ -60,10 +53,21 @@ export const store = async (req: Request & { user?: { userId: number } }, res: R
         );
         if (!heir) return res.status(400).json({message: 'Heir record not found'})
 
+        let response;
         const capsuleService = new CapsuleService(decrypt(user.wallet_secret));
         if (payload.capsule_type == 'cryptocurrency') {
+            if (!payload.asset_mint) {
+                logger.warn('Asset mint is required for cryptocurrency capsule');
+                return res.status(400).json({message: 'Asset mint is required for cryptocurrency capsule'})
+            }
+
+            if (payload.amount == undefined || payload.amount <= 0) {
+                logger.warn('Amount must be greater than zero');
+                return res.status(400).json({message: 'Amount must be greater than zero'})
+            }
+
             logger.info('creating cryptocurrency capsule')
-            const response = await capsuleService.create_crypto_capsule(
+            response = await capsuleService.create_crypto_capsule(
                 new PublicKey(user.wallet_address),
                 new PublicKey(payload.asset_mint as string),
                 payload.amount,
@@ -72,17 +76,59 @@ export const store = async (req: Request & { user?: { userId: number } }, res: R
                 payload.inactivity_period ? payload.inactivity_period as number : null,
                 new PublicKey(heir.wallet_address)
             )
-
-            console.log(response)
         }
 
-        // logger.info("store capsule information")
-        // await capsuleRepository.create(userId, payload)
+        if (payload.capsule_type == 'native') {
+            if (!payload.asset_mint) {
+                logger.warn('Asset mint is required for cryptocurrency capsule');
+                return res.status(400).json({message: 'Asset mint is required for cryptocurrency capsule'})
+            }
+
+            if (payload.amount == undefined || payload.amount <= 0) {
+                logger.warn('Amount must be greater than zero');
+                return res.status(400).json({message: 'Amount must be greater than zero'})
+            }
+
+            logger.info('creating native capsule')
+            response = await capsuleService.create_native_capsule(
+                new PublicKey(user.wallet_address),
+                payload.amount,
+                payload.unlock_type,
+                payload.unlock_timestamp ? Math.floor(payload.unlock_timestamp?.getTime() / 1000) : null,
+                payload.inactivity_period ? payload.inactivity_period as number : null,
+                new PublicKey(heir.wallet_address)
+            )
+        }
+
+        if (payload.capsule_type == 'nft') {
+            if (!payload.asset_mint) {
+                logger.warn('Asset mint is required for cryptocurrency capsule');
+                return res.status(400).json({message: 'Asset mint is required for cryptocurrency capsule'})
+            }
+
+            logger.info('creating nft capsule')
+            response = await capsuleService.create_nft_capsule(
+                new PublicKey(user.wallet_address),
+                new PublicKey(payload.asset_mint as string),
+                payload.unlock_type,
+                payload.unlock_timestamp ? Math.floor(payload.unlock_timestamp?.getTime() / 1000) : null,
+                payload.inactivity_period ? payload.inactivity_period as number : null,
+                new PublicKey(heir.wallet_address)
+            )
+        }
+
+        if (response == undefined) {
+            return res.status(400).json({message: 'there was an error creating capsule'})
+        }
+
+        logger.info("store capsule information")
+        await capsuleRepository.create(userId, {...payload, capsule_unique_id: response.capsuleID, capsule_address: response.capsulePDA })
 
         // logger.info('invalidating capsule cache')
-        // await cacheService.delete(`capsules_${userId}:all`)
+        await cacheService.delete('capsules:all')
+        await cacheService.delete(`capsules_${userId}:all`)
 
-        return res.status(201).json({message: 'Capsule created successfully'})
+        return res.status(201).json({message: 'Capsule created successfully', signature: `https://explorer.solana.com/tx/${response.signature}`})
     } catch (error) {
         if (error instanceof z.ZodError) {
             logger.warn(`validation failed for creating capsule:\n ${z.prettifyError(error)}`)

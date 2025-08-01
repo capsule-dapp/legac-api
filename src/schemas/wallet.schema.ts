@@ -7,7 +7,6 @@ export const SendSOLSchema = z.object({
         try {
             return validatePublicKey(destination)
         } catch {
-            console.error(`Invalid destination address: ${destination}`);
             return false;
         }
     }, {message: 'destination address is invalid'})
@@ -38,7 +37,6 @@ export const SendNFTSchema = z.object({
         try {
             return validatePublicKey(destination)
         } catch {
-            console.error(`Invalid destination address: ${destination}`);
             return false;
         }
     }, {message: 'destination address is invalid'}),
@@ -46,7 +44,6 @@ export const SendNFTSchema = z.object({
         try {
             return validatePublicKey(mint)
         } catch {
-            console.error(`Invalid mint address: ${mint}`);
             return false;
         }
     }, {message: 'destination address is invalid'})
