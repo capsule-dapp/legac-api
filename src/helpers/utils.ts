@@ -15,16 +15,34 @@ export function anchorWallet(secret_key: string) {
     return new Wallet(keypair)
 }
 
-export function generateSecurePassword(length = 16) {
-    const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+[]{}<>?';
+export function generateSecurePassword(length = 12) {
+    if (length < 6) throw new Error("Password length must be at least 6");
 
-    const values = new Uint32Array(length);
-    crypto.randomFillSync(values);
+    const lowercase = 'abcdefghijklmnopqrstuvwxyz';
+    const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const digits = '0123456789';
+    const symbols = '!@#$%^&*()';
+    const all = lowercase + uppercase + digits + symbols;
 
-    let password = '';
-    for (let i = 0; i < length; i++) {
-      password += charset[values[i] % charset.length];
+    const getRandomChar = (charset: any) =>
+      charset[Math.floor(Math.random() * charset.length)];
+
+    let password = [
+      getRandomChar(lowercase),
+      getRandomChar(uppercase),
+      getRandomChar(digits),
+      getRandomChar(symbols),
+    ];
+
+    while (password.length < length) {
+      password.push(getRandomChar(all));
     }
 
-    return password;
-  }
+    // Shuffle the password to avoid predictable order
+    for (let i = password.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [password[i], password[j]] = [password[j], password[i]];
+    }
+
+    return password.join('');
+}

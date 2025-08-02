@@ -1,7 +1,6 @@
 import cron from "node-cron";
 import bcrypt from 'bcryptjs';
 import { Capsule } from "../contract/contract";
-import { pool } from "../config/database";
 import { decrypt } from "../helpers/crypto";
 import { anchorWallet, generateSecurePassword } from "../helpers/utils";
 import { PublicKey, sendAndConfirmTransaction, Transaction } from "@solana/web3.js";

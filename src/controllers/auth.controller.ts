@@ -12,7 +12,8 @@ import {
   LoginSchema,
   RegisterSchema,
   SetPinSchema,
-  VerifyEmailSchema
+  VerifyEmailSchema,
+  VerifySecurityPinSchema
 } from '../schemas/auth.schema';
 import { OtpRepository } from '../repositories/otp.repository';
 import { WalletService } from '../services/wallet.service';
@@ -168,7 +169,7 @@ export const setPin = async (req: Request & { user?: { userId: number; role: str
       return res.status(400).json({message: 'No account associated with email found'})
     }
 
-    if (user.security_pin == "" || user.security_pin != null) {
+    if (user.security_pin) {
       logger.warn('security pin already set')
       return res.status(400).json({message: 'Security pin already set'})
     }
@@ -176,6 +177,9 @@ export const setPin = async (req: Request & { user?: { userId: number; role: str
     logger.info('hash security pin and save in database')
     const hashedSecurityPin = await bcrypt.hash(pin, 10)
     await userRepository.updateSecurityPin(userId, hashedSecurityPin)
+
+    logger.info('invalidate cache')
+    cacheService.delete(`user:pin${userId}`)
 
     return res.status(200).json({message: 'Security pin successfully set for account'})
   } catch(error: any) {
@@ -296,3 +300,41 @@ export const getAuthenticatedUser = async (req: Request & { user?: { userId: num
     return res.status(400).json({ error: 'Failed to fetch user details' });
   }
 };
+
+export const verifyPin = async (req: Request & { user?: { userId: number; role: string; } }, res: Response) => {
+  const { userId } = req.user!;
+  if (!userId) {
+    logger.warn(`Unauthorized attempt to fetch user details`);
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  try {
+    const { pin } = VerifySecurityPinSchema.parse(req.body)
+
+    const user = await cacheService.getOrSet(
+      `user:pin${userId}`,
+      await userRepository.findById(userId),
+      3600
+    );
+    if (!user || !user.security_pin) {
+      console.log('error occured')
+      logger.warn(`Security pin not set`);
+      return res.status(401).json({ error: 'Security pin not set for account' });
+    }
+
+    if (!await bcrypt.compare(pin, user.security_pin)) {
+      logger.warn(`Security pin not correct`);
+      return res.status(401).json({ error: 'Security pin incorrect' });
+    }
+
+    return res.status(200).json({'message': 'Security pin verified'})
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      logger.warn(`validation failed for verifying security pin: ${z.prettifyError(error)}`)
+      return res.status(400).json({error: 'validation failed', details: z.treeifyError(error)})
+    }
+    logger.error(`Verification failed: ${error}`);
+    return res.status(401).json({ error: 'Could not verify security pin at the moment' });
+  }
+
+}

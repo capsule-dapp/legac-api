@@ -70,7 +70,7 @@ export class HeirRepository {
     async findByEmail(email: string) {
         const query = `
             SELECT * FROM heirs
-            WHERE email = $1 AND password_expiry > CURRENT_TIMESTAMP
+            WHERE email = $1
         `;
 
         const values = [email];
@@ -86,7 +86,6 @@ export class HeirRepository {
             WHERE id = $3;
         `;
 
-        const expiry = new Date(Date.now() + 60 * 60 * 2 * 1000)
-        await pool.query(query, [password, expiry, heirID])
+        await pool.query(query, [password, heirID])
     }
 }

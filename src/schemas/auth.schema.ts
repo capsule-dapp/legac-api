@@ -27,6 +27,10 @@ export const SetPinSchema = z.object({
 export const VerifyEmailSchema = z.object({
     email: z.email({ message: 'email address is invalid' }),
     code: z.string().length(6, { message: 'Verification code must be 6 digits' }).regex(/^\d+$/, { message: 'Verification code must be numeric' }),
-  });
+});
+
+export const VerifySecurityPinSchema = z.object({
+    pin: z.string().length(6, {message: 'Security pin must be 6 digits'}).regex(/^\d+$/, { message: 'Verification code must be numeric' })
+});
 
 export type RegisterRequest = z.infer<typeof RegisterSchema>;

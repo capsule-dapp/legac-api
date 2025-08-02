@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { register, login, refreshToken, getAuthenticatedUser, verifyEmail, createWallet, setPin, heirLogin } from '../controllers/auth.controller';
+import { register, login, refreshToken, getAuthenticatedUser, verifyEmail, createWallet, setPin, heirLogin, verifyPin } from '../controllers/auth.controller';
 import { authenticateToken, restrictToRole } from '../middlewares/auth.middleware';
 
 const router = Router();
@@ -170,5 +170,26 @@ router.post('/verify-email', verifyEmail)
  *       400: { description: Failed to fetch user details }
  */
 router.get('/me', authenticateToken, restrictToRole(['user', 'heir']), getAuthenticatedUser);
+
+/**
+ * @swagger
+ * /auth/verify-pin:
+ *   post:
+ *     summary: Verify security pin
+ *     tags: [Auth]
+ *     security: [{ bearerAuth: [] }]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               security_pin: { type: string }
+ *     responses:
+ *       200: { description: Security pin verified }
+ *       401: { description: Invalid security pin }
+ */
+router.post('/verify-pin', authenticateToken, verifyPin)
 
 export default router;

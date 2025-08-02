@@ -44,7 +44,6 @@ export const initDb = async () => {
         wallet_address TEXT NOT NULL,
         wallet_secret TEXT NOT NULL,
         temporary_password TEXT,
-        password_expiry TIMESTAMP,
         checked_in TIMESTAMP,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
