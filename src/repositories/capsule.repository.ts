@@ -1,4 +1,5 @@
 import { pool } from "../config/database";
+import bcrypt from 'bcryptjs'
 
 export type SecurityQuestion = {
     question: string;
@@ -35,6 +36,16 @@ export class CapsuleRepository {
         return result.rows
     }
 
+    async findSecurityQuestionsAndAnswers(capsule_id: string) {
+        const query = `
+            SELECT id, question, answer FROM capsule_security_questions
+            WHERE capsule_id = $1
+        `;
+
+        const result = await pool.query(query, [capsule_id]);
+        return result.rows
+    }
+
     async create(userID: number, capsule: CapsulePayload) {
         const createCapsuleQuery = `
             INSERT INTO capsules (capsule_type, capsule_unique_id, capsule_address, heir_id)
@@ -57,9 +68,10 @@ export class CapsuleRepository {
                 INSERT INTO capsule_security_questions (capsule_id, question, answer)
                 VALUES ($1, $2, $3)
             `
+            const hashedAnswer = await bcrypt.hash(security_question.answer.trim().toLowerCase(), 10);
             await pool.query(
                 securityQuestionQuery,
-                [capsuleID, security_question.question.toLowerCase(), security_question.answer.trim().toLowerCase()]
+                [capsuleID, security_question.question.toLowerCase(), hashedAnswer]
             )
         }
     }

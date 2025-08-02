@@ -169,6 +169,6 @@ router.post('/verify-email', verifyEmail)
  *       404: { description: User not found }
  *       400: { description: Failed to fetch user details }
  */
-router.get('/me', authenticateToken, restrictToRole(['user']), getAuthenticatedUser);
+router.get('/me', authenticateToken, restrictToRole(['user', 'heir']), getAuthenticatedUser);
 
 export default router;

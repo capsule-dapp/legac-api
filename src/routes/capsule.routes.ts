@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getCapsule, index, securityQuestions, store } from "../controllers/capsule.controller";
+import { getCapsule, index, securityQuestions, store, verifySecurityQuestions } from "../controllers/capsule.controller";
 import { authenticateToken, restrictToRole } from "../middlewares/auth.middleware";
 
 const router = Router();
@@ -62,12 +62,6 @@ router.get(
  *               capsule_type:
  *                 type: string
  *                 description: The type of capsule (e.g., "vault", "legacy").
- *               capsule_unique_id:
- *                 type: string
- *                 description: A unique identifier for the capsule.
- *               capsule_address:
- *                 type: string
- *                 description: The Solana address of the capsule.
  *               heir_id:
  *                 type: integer
  *                 description: The ID of the heir associated with the capsule.
@@ -246,7 +240,7 @@ router.post(
 router.get(
     '/:capsule_address',
     authenticateToken,
-    restrictToRole(['user', 'role']),
+    restrictToRole(['user', 'heir']),
     getCapsule
 )
 
@@ -289,14 +283,58 @@ router.get(
 router.get(
     '/:capsule_address/security-questions',
     authenticateToken,
-    restrictToRole(['user', 'role']),
+    restrictToRole(['user', 'heir']),
     securityQuestions
 )
 
-router.get(
+/**
+* @swagger
+* '/capsules/{capsule_address}/verify-security-questions':
+*   post:
+*     summary: Verify capsule security questions
+*     tags: [Capsules]
+*     security: [{ bearerAuth: [] }]
+*     parameters:
+*       - in: path
+*         name: capsule_address
+*         schema:
+*           type: string
+*         required: true
+*     requestBody:
+*       required: true
+*       content:
+*         application/json:
+*           schema:
+*             type: object
+*             required:
+*               - answers
+*             properties:
+*               answers:
+*                 type: array
+*                 minItems: 1
+*                 description: Array of security questions and answers (at least one required).
+*                 items:
+*                   type: object
+*                   required:
+*                     - question_id
+*                     - answer
+*                   properties:
+*                     question_id:
+*                       type: number
+*                       description: The question id.
+*                     answer:
+*                       type: string
+*                       description: The answer to the security question.
+*     responses:
+*       200: { description: Successfully verified security questions }
+*       401: { description: Unauthorized access }
+*       404: { description: Capsule not found }
+*
+*/
+router.post(
     '/:capsule_address/verify-security-questions',
     authenticateToken,
-    restrictToRole(['user', 'role']),
+    restrictToRole(['user', 'heir']),
     verifySecurityQuestions
 )
 

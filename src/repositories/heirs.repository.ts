@@ -45,6 +45,17 @@ export class HeirRepository {
         return result.rows[0];
     }
 
+    async findById(id: number) {
+        const query = `
+            SELECT * FROM heirs
+            WHERE id = $1
+        `;
+
+        const values = [id];
+        const result: QueryResult<HeirResponse> = await pool.query(query, values);
+        return result.rows[0];
+    }
+
     async findByUser(user_id: number) {
         const query = `
             SELECT user_id, fullname, email, title, state, country, dob, age, wallet_address FROM heirs
@@ -69,7 +80,9 @@ export class HeirRepository {
 
     async updateUniquePassword(heirID: number, password: string) {
         const query = `
-            UPDATE heirs SET temporary_password = $1, password_expiry = $2
+            UPDATE heirs
+            SET temporary_password = $1,
+                password_expiry = $2
             WHERE id = $3;
         `;
 

@@ -1,9 +1,10 @@
 import { CapsuleRepository } from "../repositories/capsule.repository";
 import { HeirRepository } from "../repositories/heirs.repository";
-import { CapsuleAddressSchema, CreateCapsuleSchema } from "../schemas/capsule.schema";
+import { CapsuleAddressSchema, CreateCapsuleSchema, VerifyQuestionSchema } from "../schemas/capsule.schema";
 import { Request, Response } from "express";
 import { logger } from "../config/logger";
 import { Cache } from "../config/redis";
+import bcrypt from 'bcryptjs';
 import z from "zod";
 import { CapsuleService } from "../services/capsule.service";
 import { UserRepository } from "../repositories/user.repository";
@@ -208,5 +209,89 @@ export const getCapsule = async (req: Request & { user?: { userId: number } }, r
 
         logger.error(`could not retrieve security questions: ${error}`);
         return res.status(400).json({ error: 'Could not retrieve security questions' });
+    }
+}
+
+export const verifySecurityQuestions = async (req: Request & { user?: { userId: number; role: string } }, res: Response) => {
+    const {userId, role} = req.user!;
+    if (!userId || !role) {
+        logger.warn(`Unauthorized action: cannot create capsule`);
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    if (role !== 'heir') {
+        logger.warn(`Unauthorized action: user does not have permission to verify security questions`);
+        return res.status(403).json({ error: 'Forbidden' });
+    }
+
+    try {
+        const { answers } = VerifyQuestionSchema.parse(req.body);
+        const { capsule_address } = CapsuleAddressSchema.parse(req.params);
+
+        const heir = await cacheService.getOrSet(
+            `heir_capsule:${userId}`,
+            await heirRepository.findById(userId),
+            50
+        );
+        if (!heir) return res.status(400).json({message: 'Heir record not found'})
+
+        logger.info('retrieving capsule record')
+        const capsule = await cacheService.getOrSet(
+            `capsule:${capsule_address}`,
+            await capsuleRepository.findByAddress(capsule_address),
+            20
+        );
+        if (!capsule) {
+            logger.warn('capsule record not found')
+            return res.status(404).json({message: 'Capsule record not found'})
+        }
+
+        const questions = await cacheService.getOrSet(
+            `capsule:questions${capsule_address}`,
+            await capsuleRepository.findSecurityQuestionsAndAnswers(capsule.id),
+            10
+        )
+        if (!questions || questions.length == 0) {
+            return res.status(404).json({message: 'Security question could not be retrieved'})
+        }
+
+        if (answers.length == 0 || answers.length !== questions.length) {
+            logger.warn(`Invalid number of answers provided for casule ${capsule.id}`)
+            return res.status(400).json({message: `Invalid request, provide answers for questions (${questions.length})`});
+        }
+
+        for (let i = 0; i < questions.length; i++) {
+            const security_question = questions[i];
+            const security_answer = answers[i];
+
+            if (security_answer.question_id !== security_question.id) {
+                logger.warn('could not find any question associated with answer')
+                return res.status(400).json({message: `Could not find a question associated with answer for no. ${security_answer.question_id}`})
+            }
+
+            if (!security_answer.answer) {
+                logger.warn(`Missing answer for question ${security_question.id}`)
+                return res.status(400).json({message: `Answer for question ${security_question.id} is required`})
+            }
+
+            const isValid = await bcrypt.compare(security_answer.answer.trim().toLowerCase(), security_question.answer);
+            if (!isValid) {
+                logger.warn(`Incorrect answer for question ${security_question.id}`)
+                return res.status(401).json({message: `Incorrect answer for question ${security_question.id}`})
+            }
+        }
+
+        // unlock capsule asset ans send to beneficiary
+
+        logger.info(`Security questions verified for capsule ${capsule.id} by user ${heir.email}`)
+        return res.status(200).json({ message: 'Security questions verified successfully' });
+    } catch(error) {
+        if (error instanceof z.ZodError) {
+            logger.warn(`validation failed for retriving questions:\n ${z.prettifyError(error)}`)
+            return res.status(400).json({error: 'validation failed', details: z.treeifyError(error)})
+        }
+
+        logger.error(`Error verifying security questions: ${error}`);
+        return res.status(500).json({ error: `Error verifying answers ${error}` });
     }
 }

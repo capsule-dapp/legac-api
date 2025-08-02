@@ -98,3 +98,12 @@ export const CapsuleAddressSchema = z.object({
       }
   })
 })
+
+export const VerifyQuestionSchema = z.object({
+  answers: z.array(
+    z.object({
+        question_id: z.coerce.number({message: 'Question id is required'}),
+        answer: z.string().min(1, {message: 'Answer is required'}),
+    })
+  ).min(1, { message: 'At least one security question is required' })
+})

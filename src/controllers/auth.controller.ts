@@ -256,26 +256,41 @@ export const refreshToken = async (req: Request, res: Response) => {
   }
 };
 
-export const getAuthenticatedUser = async (req: Request & { user?: { userId: number } }, res: Response) => {
-  const userId = req.user?.userId;
-  if (!userId) {
+export const getAuthenticatedUser = async (req: Request & { user?: { userId: number; role: string; } }, res: Response) => {
+  const {userId, role} = req.user!;
+  if (!userId || !role) {
     logger.warn(`Unauthorized attempt to fetch user details`);
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
   try {
-    const user = await userRepository.findById(userId);
-    if (!user) {
-      logger.warn(`User not found for ID ${userId}`);
-      return res.status(404).json({ error: 'User not found' });
+    let response;
+    if (role == 'user') {
+      const user = await userRepository.findById(userId);
+      if (!user) {
+        logger.warn(`User not found for ID ${userId}`);
+        return res.status(404).json({ error: 'User not found' });
+      }
+      response = {
+        id: user.id,
+        email: user.email,
+        walletAddress: user.wallet_address,
+      }
+    } else {
+      const heir = await heirRepository.findById(userId);
+      if (!heir) {
+        logger.warn(`Heir not found for ID ${userId}`);
+        return res.status(404).json({ error: 'Heir not found' });
+      }
+      response = {
+        id: heir.id,
+        email: heir.email,
+        walletAddress: heir.wallet_address,
+      }
     }
 
-    logger.info(`Fetched details for user ID ${userId}: ${user.email}, ${user.wallet_address}`);
-    return res.json({
-      id: user.id,
-      email: user.email,
-      walletAddress: user.wallet_address,
-    });
+    logger.info(`Fetched details for user ID ${userId}`);
+    return res.json(response);
   } catch (error: any) {
     logger.error(`Failed to fetch user details for ID ${userId}: ${error.message}`);
     return res.status(400).json({ error: 'Failed to fetch user details' });

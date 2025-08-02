@@ -81,7 +81,6 @@ export class Capsule {
     }
 
     async get_lock_status(owner: PublicKey, capsuleID: string) {
-        console.log(this.get_capsule_pda(owner, capsuleID), capsuleID)
         return await this.program().methods
             .getLockStatus(capsuleID)
             .accountsPartial({capsuleAccount: this.get_capsule_pda(owner, capsuleID)})
@@ -222,6 +221,15 @@ export class Capsule {
             configAccount: this.get_config_pda(),
             systemProgram: SystemProgram.programId
         }).instruction()
+        return ix;
+    }
+
+    async check_condition_for_unlock(capsuleID: string, owner: PublicKey) {
+        const ix = await this.program().methods.checkCapsuleCondition(capsuleID)
+            .accountsPartial({
+                signer: owner,
+                capsuleAccount: this.get_capsule_pda(owner, capsuleID),
+            }).instruction()
         return ix;
     }
 }
