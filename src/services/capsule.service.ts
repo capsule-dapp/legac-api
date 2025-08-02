@@ -406,6 +406,10 @@ export class CapsuleService  {
         do {
             try {
                 const capsule = await this.get_capsule(capsule_address)
+                if (capsule?.isLocked) {
+                    throw new Error(`Capsule ${capsule_address} is locked`)
+                }
+
                 const tx = new Transaction();
 
                 if (capsule?.capsuleType == 'Cryptocurrency') {
