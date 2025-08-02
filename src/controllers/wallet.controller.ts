@@ -36,7 +36,7 @@ export const sendSOL = async (req: Request & { user?: { userId: number } }, res:
         }
 
         logger.info(`funds sent successfully to ${destination} from ${user.wallet_address}`)
-        return res.status(200).json({message: 'funds sent successfully', explorerLink: `explorer.solana.com/tx/${signature}?cluster=devnet`})
+        return res.status(200).json({message: 'funds sent successfully', transaction: `https://explorer.solana.com/tx/${signature}?cluster=devnet`})
     } catch(error) {
         if (error instanceof z.ZodError) {
             logger.warn(`validation failed for sending funds:\n ${z.prettifyError(error)}`)
@@ -74,7 +74,7 @@ export const sendSPLToken = async (req: Request & { user?: { userId: number } },
         }
 
         logger.info(`SPL Token sent successfully to ${destination} from ${user.wallet_address}`)
-        return res.status(200).json({message: 'SPL Token sent successfully', explorerLink: `explorer.solana.com/tx/${signature}?cluster=devnet`})
+        return res.status(200).json({message: 'SPL Token sent successfully', transaction: `https://explorer.solana.com/tx/${signature}?cluster=devnet`})
     } catch(error) {
         if (error instanceof z.ZodError) {
             logger.warn(`validation failed for sending SPL Token:\n ${z.prettifyError(error)}`)
@@ -112,7 +112,7 @@ export const sendNFT = async (req: Request & { user?: { userId: number } }, res:
         }
 
         logger.info(`NFT sent successfully to ${destination} from ${user.wallet_address}`)
-        return res.status(200).json({message: 'NFT sent successfully', explorerLink: `explorer.solana.com/tx/${signature}?cluster=devnet`})
+        return res.status(200).json({message: 'NFT sent successfully', transaction: `https://explorer.solana.com/tx/${signature}?cluster=devnet`})
     } catch(error) {
         if (error instanceof z.ZodError) {
             logger.warn(`validation failed for sending funds:\n ${z.prettifyError(error)}`)

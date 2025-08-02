@@ -93,6 +93,7 @@ export const heirLogin = async (req: Request, res: Response) => {
       await heirRepository.findByEmail(email),
       3600
     );
+    console.log(heir)
     if (!heir || !await bcrypt.compare(password, heir.temporary_password)) {
       logger.warn(`Invalid login attempt for ${email}`);
       return res.status(401).json({ error: 'Invalid credentials or Password Expired' });
@@ -277,6 +278,7 @@ export const getAuthenticatedUser = async (req: Request & { user?: { userId: num
       }
       response = {
         id: user.id,
+        role,
         email: user.email,
         walletAddress: user.wallet_address,
       }
@@ -288,6 +290,7 @@ export const getAuthenticatedUser = async (req: Request & { user?: { userId: num
       }
       response = {
         id: heir.id,
+        role,
         email: heir.email,
         walletAddress: heir.wallet_address,
       }

@@ -163,6 +163,7 @@ router.post('/verify-email', verifyEmail)
  *               type: object
  *               properties:
  *                 id: { type: number }
+ *                 role: { type: string }
  *                 email: { type: string }
  *                 walletAddress: { type: string, nullable: true }
  *       401: { description: Unauthorized }

@@ -1,11 +1,24 @@
 import { Connection, Keypair, LAMPORTS_PER_SOL, PublicKey, sendAndConfirmTransaction, SystemProgram, Transaction } from "@solana/web3.js";
 import { Capsule, InactivityBased, TimeBased } from "../contract/contract"
 import { logger } from "../config/logger";
-import {createAssociatedTokenAccountInstruction, getAssociatedTokenAddress, getMint } from "@solana/spl-token";
+import {createAssociatedTokenAccountInstruction, getAssociatedTokenAddress, getAssociatedTokenAddressSync, getMint } from "@solana/spl-token";
 import { connection } from "../config/config";
 import { BN, Wallet } from "@coral-xyz/anchor";
 import { anchorWallet } from "../helpers/utils";
-import { unlockArgs } from "@metaplex-foundation/mpl-token-metadata";
+
+export interface CapsuleData {
+    owner: string;
+    capsuleID: string;
+    capsuleType: string;
+    beneficiary: string;
+    mint: string;
+    amount: number;
+    assetUri?: string;
+    documentFormat?: string;
+    encryptedMessage?: string;
+    assetVault?: string;
+    isLocked: boolean;
+}
 
 export class CapsuleService  {
     private wallet: Wallet;
@@ -342,5 +355,106 @@ export class CapsuleService  {
           }
         } while (retries < maxRetries);
         throw new Error('Failed to create crypto capsule: max retries exceeded');
+    }
+
+    async get_capsule(capsule_address: string) {
+        const capsule = await this.capsule.program().account.capsule.fetch(capsule_address)
+        if ('cryptocurrency' in capsule.assetType) {
+            const mintInfo = await getMint(this.connection, capsule.assetMint!)
+            const uiAmount = capsule.amount.toNumber() / Math.pow(10, mintInfo.decimals)
+            return {
+                owner: capsule.owner.toBase58(),
+                capsuleID: capsule.capsuleId,
+                capsuleType: 'Cryptocurrency',
+                amount: uiAmount,
+                beneficiary: capsule.beneficiary.toBase58(),
+                mint: capsule.assetMint!.toBase58(),
+                assetVault: capsule.assetTokenVault?.toBase58(),
+                isLocked: capsule.isLocked,
+            } as CapsuleData
+        }
+
+        if ('native' in capsule.assetType) {
+            const uiAmount = capsule.amount.toNumber() / LAMPORTS_PER_SOL
+            return {
+                owner: capsule.owner.toBase58(),
+                capsuleID: capsule.capsuleId,
+                capsuleType: 'Native',
+                amount: uiAmount,
+                beneficiary: capsule.beneficiary.toBase58(),
+                mint: capsule.assetMint!.toBase58(),
+                isLocked: capsule.isLocked,
+            } as CapsuleData
+        }
+
+        if ('nft' in capsule.assetType) {
+            return {
+                owner: capsule.owner.toBase58(),
+                capsuleID: capsule.capsuleId,
+                capsuleType: 'NFT',
+                beneficiary: capsule.beneficiary.toBase58(),
+                mint: capsule.assetMint!.toBase58(),
+                assetVault: capsule.assetNftVault?.toBase58(),
+                isLocked: capsule.isLocked,
+            } as CapsuleData
+        }
+    }
+
+    async execute_release(capsule_address: string) {
+        let retries = 0;
+        const maxRetries = 3;
+        do {
+            try {
+                const capsule = await this.get_capsule(capsule_address)
+                const tx = new Transaction();
+
+                if (capsule?.capsuleType == 'Cryptocurrency') {
+                    logger.info('Executing Release for Cryptocurrency')
+                    const cryptoIx = await this.capsule.execute_crypto_release(
+                        new PublicKey(capsule.owner),
+                        capsule.capsuleID,
+                        new PublicKey(capsule.beneficiary),
+                        new PublicKey(capsule.assetVault!),
+                        getAssociatedTokenAddressSync(new PublicKey(capsule.mint), new PublicKey(capsule.beneficiary)),
+                        new PublicKey(capsule.mint)
+                    )
+                    tx.add(cryptoIx)
+                }
+
+                if (capsule?.capsuleType == 'NFT') {
+                    logger.info('Executing Release for NFT')
+                    const nftIx = await this.capsule.execute_nft_release(
+                        new PublicKey(capsule.owner),
+                        capsule.capsuleID,
+                        new PublicKey(capsule.beneficiary),
+                        new PublicKey(capsule.assetVault!),
+                        getAssociatedTokenAddressSync(new PublicKey(capsule.mint), new PublicKey(capsule.beneficiary)),
+                        new PublicKey(capsule.mint)
+                    )
+                    tx.add(nftIx)
+                }
+
+                if (capsule?.capsuleType == 'Native') {
+                    logger.info('Executing Release for SOLANA')
+                    const nativeIx = await this.capsule.execute_native_release(
+                        new PublicKey(capsule.owner),
+                        capsule.capsuleID,
+                        new PublicKey(capsule.beneficiary)
+                    )
+                    tx.add(nativeIx)
+                }
+
+                const signature = await sendAndConfirmTransaction(this.connection, tx, [this.wallet.payer]);
+                logger.info(`Capsule release executed successfully: ${capsule_address}`);
+                return signature;
+            } catch (error: any) {
+                logger.error(`Attempt ${retries + 1} failed: ${error.message}`);
+                retries++;
+                if (retries >= maxRetries) {
+                    throw new Error(`Failed to execute capsule release after ${maxRetries} attempts: ${error.message}`);
+                }
+            }
+        } while (retries < maxRetries);
+
     }
 }

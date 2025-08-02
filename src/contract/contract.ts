@@ -232,4 +232,62 @@ export class Capsule {
             }).instruction()
         return ix;
     }
+
+    async execute_nft_release(
+        owner: PublicKey,
+        capsuleID: string,
+        beneficiary: PublicKey,
+        asset_vault: PublicKey,
+        beneficiary_token_account: PublicKey,
+        mint: PublicKey
+    ) {
+        console.log('nft vault', this.get_capsule_token_vault_pda(mint, capsuleID).toBase58())
+        const ix = await this.program().methods.executeNftCapsuleRelease(capsuleID)
+            .accountsPartial({
+                signer: beneficiary,
+                capsuleAccount: this.get_capsule_pda(owner, capsuleID),
+                configAccount: this.get_config_pda(),
+                assetMint: mint,
+                assetNftVault: asset_vault,
+                tokenProgram: TOKEN_PROGRAM_ID,
+                beneficiaryNftAccount: beneficiary_token_account
+            }).instruction()
+        return ix;
+    }
+
+    async execute_crypto_release(
+        owner: PublicKey,
+        capsuleID: string,
+        beneficiary: PublicKey,
+        asset_vault: PublicKey,
+        beneficiary_token_account: PublicKey,
+        mint: PublicKey
+    ) {
+        console.log('crypto vault', this.get_capsule_token_vault_pda(mint, capsuleID).toBase58())
+        const ix = await this.program().methods.executeCryptoCapsuleRelease(capsuleID)
+            .accountsPartial({
+                signer: beneficiary,
+                capsuleAccount: this.get_capsule_pda(owner, capsuleID),
+                configAccount: this.get_config_pda(),
+                assetMint: mint,
+                assetTokenVault: asset_vault,
+                tokenProgram: TOKEN_PROGRAM_ID,
+                beneficiaryTokenAccount: beneficiary_token_account
+            }).instruction()
+        return ix;
+    }
+
+    async execute_native_release(
+        owner: PublicKey,
+        capsuleID: string,
+        beneficiary: PublicKey
+    ) {
+        const ix = await this.program().methods.executeSolCapsuleRelease(capsuleID)
+            .accountsPartial({
+                signer: beneficiary,
+                capsuleAccount: this.get_capsule_pda(owner, capsuleID),
+                configAccount: this.get_config_pda()
+            }).instruction()
+        return ix;
+    }
 }

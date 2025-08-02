@@ -19,6 +19,7 @@ import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
 import { BN } from '@coral-xyz/anchor';
 import { capsuleLockScheduler } from './jobs/capsule.job';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
+import { anchorWallet } from './helpers/utils';
 
 // load environment variables
 dotenv.config();

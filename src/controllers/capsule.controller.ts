@@ -124,7 +124,7 @@ export const store = async (req: Request & { user?: { userId: number } }, res: R
         await cacheService.delete('capsules:all')
         await cacheService.delete(`capsules_${userId}:all`)
 
-        return res.status(201).json({message: 'Capsule created successfully', signature: `https://explorer.solana.com/tx/${response.signature}`})
+        return res.status(201).json({message: 'Capsule created successfully', transaction: `https://explorer.solana.com/tx/${response.signature}?cluster=devnet`})
     } catch (error) {
         if (error instanceof z.ZodError) {
             logger.warn(`validation failed for creating capsule:\n ${z.prettifyError(error)}`)
@@ -187,6 +187,12 @@ export const getCapsule = async (req: Request & { user?: { userId: number } }, r
     try {
         const { capsule_address } = CapsuleAddressSchema.parse(req.params);
 
+        const user = await cacheService.getOrSet(
+            `user_capsule:${userId}`,
+            await userRepository.findById(userId),
+            50
+        );
+
         logger.info('retrieving capsule record')
         const capsule = await cacheService.getOrSet(
             `capsule:${capsule_address}`,
@@ -198,8 +204,15 @@ export const getCapsule = async (req: Request & { user?: { userId: number } }, r
             return res.status(404).json({message: 'Capsule record not found'})
         }
 
+        const capsuleService = new CapsuleService(decrypt(user.wallet_secret));
+        const data = await cacheService.getOrSet(
+            `capsule:onchain${capsule_address}`,
+            await capsuleService.get_capsule(capsule_address),
+            30
+        )
+
         logger.info('successfully retrieved capsule')
-        return res.status(200).json(capsule)
+        return res.status(200).json(data)
 
     } catch (error) {
         if (error instanceof z.ZodError) {
@@ -246,6 +259,10 @@ export const verifySecurityQuestions = async (req: Request & { user?: { userId: 
             return res.status(404).json({message: 'Capsule record not found'})
         }
 
+        if (capsule.status == 'claimed') {
+            return res.status(400).json({message: 'Capsule asset already claimed'})
+        }
+
         const questions = await cacheService.getOrSet(
             `capsule:questions${capsule_address}`,
             await capsuleRepository.findSecurityQuestionsAndAnswers(capsule.id),
@@ -282,9 +299,21 @@ export const verifySecurityQuestions = async (req: Request & { user?: { userId: 
         }
 
         // unlock capsule asset ans send to beneficiary
+        const capsuleService = new CapsuleService(decrypt(heir.wallet_secret))
+        const signature = await capsuleService.execute_release(capsule_address)
+        if (!signature) {
+            logger.warn(`Encountered an error executing capsule release ${capsule_address}`)
+            return res.status(400).json({message: `Could not execute capsule release for ${capsule_address}`})
+        }
+
+        logger.info(`update capsule to be claimed ${capsule_address}`)
+        await capsuleRepository.updateStatus(capsule.id, 'claimed')
 
         logger.info(`Security questions verified for capsule ${capsule.id} by user ${heir.email}`)
-        return res.status(200).json({ message: 'Security questions verified successfully' });
+        return res.status(200).json({
+            message: 'Security questions verified successfully and capsule assets unlocked',
+            transaction: `https://explorer.solana.com/tx/${signature}?cluster=devnet`
+        });
     } catch(error) {
         if (error instanceof z.ZodError) {
             logger.warn(`validation failed for retriving questions:\n ${z.prettifyError(error)}`)
