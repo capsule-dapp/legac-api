@@ -58,7 +58,7 @@ export class HeirRepository {
 
     async findByUser(user_id: number) {
         const query = `
-            SELECT user_id, fullname, email, title, state, country, dob, age, wallet_address FROM heirs
+            SELECT id, user_id, fullname, email, title, state, country, dob, age, wallet_address FROM heirs
             WHERE user_id = $1
         `;
 
