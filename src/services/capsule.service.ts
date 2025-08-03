@@ -16,6 +16,7 @@ export interface CapsuleData {
     assetUri?: string;
     documentFormat?: string;
     encryptedMessage?: string;
+    unlockTimestamp?: string,
     assetVault?: string;
     isLocked: boolean;
 }
@@ -370,6 +371,7 @@ export class CapsuleService  {
                 beneficiary: capsule.beneficiary.toBase58(),
                 mint: capsule.assetMint!.toBase58(),
                 assetVault: capsule.assetTokenVault?.toBase58(),
+                unlockTimestamp: capsule?.unlockTimestamp,
                 isLocked: capsule.isLocked,
             } as CapsuleData
         }
@@ -382,6 +384,7 @@ export class CapsuleService  {
                 capsuleType: 'Native',
                 amount: uiAmount,
                 beneficiary: capsule.beneficiary.toBase58(),
+                unlockTimestamp: capsule?.unlockTimestamp,
                 mint: capsule.assetMint!.toBase58(),
                 isLocked: capsule.isLocked,
             } as CapsuleData
@@ -395,6 +398,7 @@ export class CapsuleService  {
                 beneficiary: capsule.beneficiary.toBase58(),
                 mint: capsule.assetMint!.toBase58(),
                 assetVault: capsule.assetNftVault?.toBase58(),
+                unlockTimestamp: capsule?.unlockTimestamp,
                 isLocked: capsule.isLocked,
             } as CapsuleData
         }
