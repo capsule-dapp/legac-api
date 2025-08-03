@@ -62,6 +62,7 @@ router.post('/login', login);
  *             properties:
  *               email: { type: string }
  *               password: { type: string }
+ *               capsule_address: { type: string }
  *     responses:
  *       200: { description: Login successful }
  *       401: { description: Invalid credentials }

@@ -281,6 +281,7 @@ export const getAuthenticatedUser = async (req: Request & { user?: { userId: num
         id: user.id,
         role,
         email: user.email,
+        fullname: user.fullname,
         walletAddress: user.wallet_address,
       }
     } else {
@@ -293,6 +294,7 @@ export const getAuthenticatedUser = async (req: Request & { user?: { userId: num
         id: heir.id,
         role,
         email: heir.email,
+        fullname: heir.fullname,
         walletAddress: heir.wallet_address,
       }
     }

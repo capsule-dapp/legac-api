@@ -25,7 +25,7 @@ export const index = async (req: Request & { user?: { userId: number } }, res: R
         );
         if (!heir) {
             logger.warn(`Could not find any heir record`);
-            return res.status(200).json([]);
+            return res.status(200).json(null);
         }
 
         return res.status(200).json({...heir});
