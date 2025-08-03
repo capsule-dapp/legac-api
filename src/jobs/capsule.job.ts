@@ -56,9 +56,9 @@ export const capsuleLockScheduler = () => {
 
                       logger.info('Invalidate cache')
                       cacheService.delete(`heir:${data.heir_email}`)
-                      
+
                       logger.info('Notify beneficiary via email')
-                      await emailService.sendCapsuleClaimEmail(data.heir_email, data.heir_fullname, temporary_password)
+                      await emailService.sendCapsuleClaimEmail(data.heir_email, data.heir_fullname, temporary_password, data.capsule_address)
                     }
                   }
                 }

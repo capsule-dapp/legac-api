@@ -9,6 +9,7 @@ import jwt from 'jsonwebtoken';
 import { z } from 'zod'
 
 import {
+  HeirLoginSchema,
   LoginSchema,
   RegisterSchema,
   SetPinSchema,
@@ -19,6 +20,7 @@ import { OtpRepository } from '../repositories/otp.repository';
 import { WalletService } from '../services/wallet.service';
 import { HeirRepository } from '../repositories/heirs.repository';
 import { Cache } from '../config/redis';
+import { CapsuleRepository } from '../repositories/capsule.repository';
 
 const userRepository = new UserRepository();
 const heirRepository = new HeirRepository();
@@ -87,13 +89,12 @@ export const login = async (req: Request, res: Response) => {
 
 export const heirLogin = async (req: Request, res: Response) => {
   try {
-    const { email, password } = LoginSchema.parse(req.body);
+    const { email, password, capsule_address } = HeirLoginSchema.parse(req.body);
     const heir = await cacheService.getOrSet(
       `heir:${email}`,
       await heirRepository.findByEmail(email),
       3600
     );
-    console.log(heir)
     if (!heir || !await bcrypt.compare(password, heir.temporary_password)) {
       logger.warn(`Invalid login attempt for ${email}`);
       return res.status(401).json({ error: 'Invalid credentials or Password Expired' });
@@ -104,7 +105,7 @@ export const heirLogin = async (req: Request, res: Response) => {
     const refreshToken = jwtService.generateRefreshToken(heir.id);
 
     logger.info(`Heir logged in: ${email} (ID: ${heir.id})`);
-    return res.json({ accessToken, refreshToken });
+    return res.json({ accessToken, refreshToken, capsule_address });
   } catch (error) {
     if (error instanceof z.ZodError) {
       logger.warn(`validation failed for authenticating heir: ${z.prettifyError(error)}`)

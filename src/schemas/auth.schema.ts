@@ -20,6 +20,24 @@ export const LoginSchema = z.object({
         )
 });
 
+export const HeirLoginSchema = z.object({
+    email: z.email({message: 'email address is invalid'}),
+    password: z.string()
+        .refine(
+            value => /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%\^\&\*\(\)])(?=.{6,})/.test(value),
+            {message: 'password must contain uppercase, lowercase, special symbols and numbers'}
+        ),
+    capsule_address: z.string()
+        .min(1, { message: 'Capsule address is required'})
+        .refine(address => {
+            try {
+                return !validatePublicKey(address)
+            } catch(error) {
+                false
+            }
+        })
+});
+
 export const SetPinSchema = z.object({
     pin: z.string().length(6, {message: 'Security pin must be 6 digits'}).regex(/^\d+$/, { message: 'Verification code must be numeric' })
 })

@@ -151,7 +151,7 @@ export class EmailService {
     }
   }
 
-  async sendCapsuleClaimEmail(beneficiaryEmail: string, beneficiaryName: string, temporaryPassword: string): Promise<void> {
+  async sendCapsuleClaimEmail(beneficiaryEmail: string, beneficiaryName: string, temporaryPassword: string, capsule_address: string): Promise<void> {
     const subject = 'Notification For Asset Claim!';
     const template = `
       <!DOCTYPE html>
@@ -178,6 +178,7 @@ export class EmailService {
               <p style="color: #555555; font-size: 16px; line-height: 1.5;">
                 <strong>Email:</strong> ${beneficiaryEmail}<br>
                 <strong>Temporary Password:</strong> ${temporaryPassword}<br>
+                <strong>Capsule Address:</strong> ${capsule_address} (provide capsule address when loggin in)
               </p>
               <p style="color: #555555; font-size: 16px; line-height: 1.5;">
                 For security, this temporary password will expire in 2 hours. Please log in and set a new password as soon as possible.
