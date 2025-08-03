@@ -81,9 +81,8 @@ export class HeirRepository {
     async updateUniquePassword(heirID: number, password: string) {
         const query = `
             UPDATE heirs
-            SET temporary_password = $1,
-                password_expiry = $2
-            WHERE id = $3;
+            SET temporary_password = $1
+            WHERE id = $2;
         `;
 
         await pool.query(query, [password, heirID])
