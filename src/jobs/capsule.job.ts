@@ -11,9 +11,9 @@ import { EmailService } from "../services/email.service";
 import { Cache } from "../config/redis";
 import { connection } from "../config/config";
 
-const capsuleRepository = new CapsuleRepository()
-const heirRepository = new HeirRepository()
-const emailService = new EmailService()
+const capsuleRepository = new CapsuleRepository();
+const heirRepository = new HeirRepository();
+const emailService = new EmailService();
 const cacheService = new Cache();
 const capsule = new Capsule();
 
