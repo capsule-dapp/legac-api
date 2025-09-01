@@ -6,7 +6,7 @@ dotenv.config();
 
 export const pool = new Pool({
   connectionString: config.databaseUrl,
-  ssl: true
+  ssl: config.databaseSSL
 });
 
 export const initDb = async () => {

@@ -6,6 +6,7 @@ dotenv.config();
 export const config = {
   port: Number(process.env.PORT) || 3000,
   databaseUrl: process.env.DATABASE_URL || 'postgres://user:password@localhost:5432/database',
+  databaseSSL: process.env.DATABASE_SSL || false,
   jwtSecret: process.env.JWT_SECRET || 'your_jwt_secret',
   redisUri: process.env.REDIS_URI || 'redis://localhost:6379',
   smtpHost: process.env.SMTP_HOST || 'smtp.gmail.com',
